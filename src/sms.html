@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>
+    SMS Inbox
+  </title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-gray-100">
+
+  <!-- NAVBAR -->
+
+  <nav
+    class="bg-[#0B4F63] px-8 py-5 flex justify-between items-center"
+  >
+
+    <h1
+      class="text-white text-2xl font-bold"
+    >
+      OGSMS
+    </h1>
+
+    <a
+      href="dashboard.html"
+      class="text-white"
+    >
+      Dashboard
+    </a>
+
+  </nav>
+
+  <!-- MAIN -->
+
+  <main
+    class="max-w-6xl mx-auto p-6"
+  >
+
+    <div
+      class="bg-white rounded-3xl p-8 shadow-lg"
+    >
+
+      <h1
+        class="text-4xl font-bold text-[#0B4F63]"
+      >
+        SMS Inbox
+      </h1>
+
+      <div
+        id="smsContainer"
+        class="mt-8 space-y-4"
+      >
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+
+    async function loadSMS(){
+
+      try{
+
+        const response =
+        await fetch(
+
+          "http://localhost:5000/get-sms",
+
+          {
+
+            method: "POST",
+
+            headers: {
+
+              "Content-Type":
+              "application/json"
+
+            }
+
+          }
+
+        );
+
+        const data =
+        await response.json();
+
+        const container =
+        document.getElementById(
+          "smsContainer"
+        );
+
+        data.messages.forEach((item) => {
+
+          container.innerHTML +=
+
+          `
+
+          <div
+            class="border rounded-2xl p-5"
+          >
+
+            <h2
+              class="text-xl font-bold"
+            >
+
+              ${item.number}
+
+            </h2>
+
+            <p
+              class="text-gray-500 mt-2"
+            >
+
+              Service:
+              ${item.service}
+
+            </p>
+
+            <p
+              class="text-green-600 font-bold text-2xl mt-3"
+            >
+
+              Code:
+              ${item.code}
+
+            </p>
+
+          </div>
+
+          `;
+
+        });
+
+      }
+
+      catch(error){
+
+        console.log(error);
+
+      }
+
+    }
+
+    loadSMS();
+
+  </script>
+
+</body>
+
+</html>

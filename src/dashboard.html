@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Dashboard - OGSMS</title>
+
+  <!-- TAILWIND -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- GOOGLE FONT -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+
+    body{
+      font-family: 'Poppins', sans-serif;
+    }
+
+  </style>
+
+</head>
+
+<body class="bg-gray-100">
+
+  <div class="md:hidden flex justify-between sticky top-0 z-50 items-center bg-[#0B4F63] text-white  p-4">
+  <h1 class="text-3xl font-bold">OGSMS</h1>
+
+  <button id="menuBtn" class="text-2xl">
+    ☰
+  </button>
+</div>
+
+  <div class="flex flex-col md:flex-row min-h-screen">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class=" hidden md:block lg:w-64  bg-[#0B4F63] text-white p-4">
+
+      <!-- LOGO -->
+      <h1 class="text-3xl pt-5 font-extrabold hidden md:block">
+        OGSMS
+      </h1>
+
+      <!-- MENU -->
+      <ul class="md:mt-16 mt-1 space-y-6 text-lg">
+
+        <li>
+          <a href="dashboard.html" class="block text-orange-300">
+            Dashboard
+          </a>
+        </li>
+
+        <li>
+          <a href="wallet.html" class="block hover:text-orange-300 transition">
+            Wallet
+          </a>
+        </li>
+
+        <li>
+          <a href="numbers.html" class="block hover:text-orange-300 transition">
+            Buy Numbers
+          </a>
+        </li>
+
+        <li>
+          <a href="sms.html" class="block hover:text-orange-300 transition">
+            SMS Inbox
+          </a>
+        </li>
+
+      </ul>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="flex-1 p-4 md:p-10">
+
+      <!-- TOP -->
+      <div class="flex justify-between items-center flex-wrap gap-6">
+
+        <div>
+
+          <h1 class="text-2xl md:text-4xl font-extrabold text-gray-800">
+
+            Welcome Back,
+            <span id="userName" class="text-orange-500">
+              User
+            </span>
+
+          </h1>
+
+          <p class="text-gray-500 mt-2">
+
+            Logged in as:
+            <span id="userEmail">
+              example@email.com
+            </span>
+
+          </p>
+
+        </div>
+
+        <!-- LOGOUT -->
+        <button
+        id="logoutBtn"
+        class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-2xl font-semibold shadow-lg transition">
+
+          Logout
+
+        </button>
+
+      </div>
+
+      <!-- STATS -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+
+        <!-- BALANCE -->
+        <div class="bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition">
+
+          <p class="text-gray-500">
+            Wallet Balance
+          </p>
+
+          <h1
+  id="walletBalance"
+  class="text-3xl md:text-5xl font-extrabold mt-4 text-[#0B4F63]"
+>
+  ₦0
+</h1>
+
+        </div>
+
+        <!-- ACTIVE -->
+        <div class="bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition">
+
+          <p class="text-gray-500">
+            Active Numbers
+          </p>
+
+          <h1 class="text-5xl font-extrabold mt-4 text-orange-500">
+            0
+          </h1>
+
+        </div>
+
+        <!-- MESSAGES -->
+        <div class="bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition">
+
+          <p class="text-gray-500">
+            Messages Received
+          </p>
+
+          <h1 class="text-5xl font-extrabold mt-4 text-[#0B4F63]">
+            0
+          </h1>
+
+        </div>
+
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="bg-white mt-12 p-10 rounded-3xl shadow-sm">
+
+        <h2 class="text-3xl font-bold text-gray-800">
+
+          Quick Actions
+
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+
+          <!-- BUTTON -->
+          <a
+          href="wallet.html"
+          class="bg-orange-500 hover:bg-orange-600 text-white p-6 rounded-3xl text-center font-bold text-xl shadow-lg transition">
+
+            Deposit Funds
+
+          </a>
+
+          <!-- BUTTON -->
+          <a
+          href="numbers.html"
+          class="bg-[#0B4F63] hover:bg-[#083847] text-white p-6 rounded-3xl text-center font-bold text-xl shadow-lg transition">
+
+            Buy Numbers
+
+          </a>
+
+          <!-- BUTTON -->
+          <a
+          href="sms.html"
+          class="bg-white hidden border-2 border-[#0B4F63] hover:bg-[#0B4F63] hover:text-white text-[#0B4F63] p-6 rounded-3xl text-center font-bold text-xl transition">
+
+            View SMS
+
+          </a>
+
+          <a
+  href="history.html"
+  class="bg-[#0B4F63] text-white px-8 py-4 rounded-2xl font-bold inline-block mt-4"
+>
+  Purchase History
+</a>
+
+        </div>
+
+      </div>
+
+      <!-- RECENT ORDERS -->
+      <div class="bg-white mt-12 p-4 md:p-10 rounded-3xl shadow-sm">
+
+        <div class="flex justify-between items-center flex-wrap gap-4">
+
+          <h2 class="text-3xl font-bold text-gray-800">
+
+            Recent Orders
+
+          </h2>
+
+          <button class="bg-gray-100 hover:bg-gray-200 px-6 py-3 rounded-2xl font-semibold transition">
+
+            View All
+
+          </button>
+
+        </div>
+
+        <!-- MOBILE LIST -->
+<div id="mobileOrders" class="md:hidden mt-6 space-y-4">
+</div>
+
+        <div class="mt-10 overflow-x-auto hidden md:block">
+
+          <table class="w-full min-w-[700px]">
+
+            <thead>
+
+              <tr class="text-left text-gray-500 border-b">
+
+                <th class="pb-4 px-4">Country</th>
+                <th class="pb-4 px-4">Number</th>
+                <th class="pb-4 px-4">Service</th>
+                <th class="pb-4 px-4">Status</th>
+                <th class="pb-4 px-4">Date</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody id="recentOrdersTable">
+
+             
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- JAVASCRIPT -->
+  <script src="js/app.js"></script>
+
+
+  <script>
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.getElementById("sidebar");
+
+menuBtn.addEventListener("click", () => {
+  sidebar.classList.toggle("hidden");
+});
+</script>
+
+</body>
+
+</html>
