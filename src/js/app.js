@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:5000";
+const BASE_URL = "https://ogsms-3.onrender.com";
+
 
 
 // ======================
@@ -741,11 +742,9 @@ async function loadPrice(){
     priceInput.value =
     "Loading...";
 
-    const response =
-    await fetch(
-
-      "http://localhost:5000/get-price",
-
+   const response =
+await fetch(
+  `${API_URL}/get-price`,
       {
 
         method: "POST",
@@ -850,10 +849,8 @@ async function cancelNumber(orderId, price){
   try{
 
     const response =
-    await fetch(
-
-      "http://localhost:5000/cancel-number",
-
+await fetch(
+  `${API_URL}/cancel-number`,
       {
 
         method:"POST",
@@ -941,9 +938,8 @@ async function loadRecentOrders(){
   try{
 
     const response =
-    await fetch(
-
-      "http://localhost:5000/purchase-history",
+await fetch(
+  `${API_URL}/purchase-history`,
 
       {
 
