@@ -1,4 +1,4 @@
-const BASE_URL = "https://ogsms-3.onrender.com";
+const API_URL = "https://ogsms-3.onrender.com";
 
 
 
