@@ -299,8 +299,7 @@
 
         callback: async function(response){
 
-          alert("Callback reached");
-
+          
           try{
 
             const update =
@@ -334,7 +333,7 @@
 
             const data = await update.json();
 
-alert(JSON.stringify(data));
+
 
             if(data.success){
 
