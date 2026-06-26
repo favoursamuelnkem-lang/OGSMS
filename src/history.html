@@ -91,10 +91,8 @@
       try{
 
         const response =
-        await fetch(
-
-          "http://localhost:5000/purchase-history",
-
+       await fetch(
+  `${API_URL}/purchase-history`,
           {
 
             method: "POST",
@@ -280,7 +278,7 @@ async function checkSMS(orderId){
 
     const response =
     await fetch(
-      "http://localhost:5000/get-sms",
+  `${API_URL}/get-sms`,
       {
         method:"POST",
         headers:{
@@ -345,9 +343,7 @@ async function cancelNumber(orderId, price){
 
     const response =
     await fetch(
-
-      "http://localhost:5000/cancel-number",
-
+  `${API_URL}/cancel-number`,
       {
 
         method:"POST",

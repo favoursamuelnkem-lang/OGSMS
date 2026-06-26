@@ -201,6 +201,7 @@
   </main>
 
   <script>
+    const API_URL = "https://ogsms-3.onrender.com";
 
     // LOAD USER
 
@@ -301,9 +302,8 @@
           try{
 
             const update =
-            await fetch(
-
-              "http://localhost:5000/update-wallet",
+           await fetch(
+  `${API_URL}/update-wallet`,
 
               {
 
