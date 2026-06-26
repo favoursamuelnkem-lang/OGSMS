@@ -329,6 +329,9 @@ app.post(
   "/update-wallet",
   async (req, res) => {
 
+    console.log("UPDATE WALLET REQUEST:", req.body);
+
+
     try {
 
       const email =
@@ -871,20 +874,23 @@ app.post(
     try {
 
       const email =
-      req.body.email;
+req.body.email;
 
-      const purchases =
-      await PurchasedNumber.find({
+console.log("PURCHASE HISTORY EMAIL:", email);
 
-        userEmail:
-        email
+const purchases =
+await PurchasedNumber.find({
 
-      }).sort({
+  userEmail:
+  email
 
-        createdAt: -1
+}).sort({
 
-      });
+  createdAt: -1
 
+});
+
+console.log("PURCHASES FOUND:", purchases);
       res.json({
 
         success: true,
@@ -909,6 +915,8 @@ app.post(
 
   }
 );
+
+
 
 
 // ======================
