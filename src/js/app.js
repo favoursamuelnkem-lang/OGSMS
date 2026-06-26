@@ -1061,6 +1061,20 @@ if(mobileOrders){
 
 loadRecentOrders();
 
+const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+
+  logoutBtn.addEventListener("click", () => {
+
+    localStorage.removeItem("currentUser");
+
+    window.location.href = "login.html";
+
+  });
+
+}
+
 
 const menuBtn = document.getElementById("menuBtn");
 const sidebar = document.getElementById("sidebar");
