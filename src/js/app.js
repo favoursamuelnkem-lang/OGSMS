@@ -367,104 +367,42 @@ function setAmount(amount){
 // FUND WALLET
 // ======================
 
-async function fundWallet(amount){
+async function verifyPayment(tx_ref, amount) {
 
   const currentUser =
-  JSON.parse(
-    localStorage.getItem(
-      "currentUser"
-    )
-  );
+    JSON.parse(localStorage.getItem("currentUser"));
 
-  if(!currentUser){
-
-    alert(
-      "Login Required"
-    );
-
+  if (!currentUser) {
+    alert("Login Required");
     return;
-
   }
 
-  try{
+  const response = await fetch(`${API_URL}/update-wallet`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email: currentUser.email,
+      amount,
+      transaction_id: tx_ref
+    })
+  });
 
-    const response =
-    await fetch(
+  const data = await response.json();
 
-      `${API_URL}/update-wallet`,
+  if (data.success) {
 
-      {
+    alert("Wallet Funded Successfully");
 
-        method: "POST",
+    currentUser.balance = data.balance;
 
-        headers: {
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
-          "Content-Type":
-          "application/json"
-
-        },
-
-        body: JSON.stringify({
-
-          email:
-          currentUser.email,
-
-          amount
-
-        })
-
-      }
-
-    );
-
-    const data =
-    await response.json();
-
-    if(data.success){
-
-      currentUser.balance =
-      data.balance;
-
-      localStorage.setItem(
-
-        "currentUser",
-
-        JSON.stringify(
-          currentUser
-        )
-
-      );
-
-      alert(
-        "Wallet Funded Successfully"
-      );
-
-      location.reload();
-
-    }
-
-    else{
-
-      alert(
-        data.message
-      );
-
-    }
-
+  } else {
+    alert(data.message);
   }
-
-  catch(error){
-
-    console.log(error);
-
-    alert(
-      "Server Error"
-    );
-
-  }
-
 }
-
 
 // ======================
 // FLUTTERWAVE PAYMENT
@@ -537,11 +475,22 @@ function makePayment(){
 
     },
 
-    callback: function(response){
+   callback: function (response) {
 
-      fundWallet(amount);
+  console.log(response);
 
-    },
+  if (!response.tx_ref) {
+    alert("Transaction failed");
+    return;
+  }
+
+  // save amount temporarily
+  localStorage.setItem("pendingAmount", amount);
+
+  // redirect to dashboard
+  window.location.href =
+    `dashboard.html?tx_ref=${response.tx_ref}`;
+},
 
     onclose: function(){
 
@@ -1080,9 +1029,30 @@ if (logoutBtn) {
 }
 
 
+
 const menuBtn = document.getElementById("menuBtn");
 const sidebar = document.getElementById("sidebar");
 
 menuBtn.addEventListener("click", () => {
   sidebar.classList.toggle("hidden");
+});
+
+window.addEventListener("load", () => {
+
+  const params = new URLSearchParams(window.location.search);
+
+  const tx_ref = params.get("tx_ref");
+
+  const amount = localStorage.getItem("pendingAmount");
+
+  const alreadyProcessed = localStorage.getItem("processed_tx");
+
+  if (tx_ref && amount && !alreadyProcessed) {
+
+    localStorage.setItem("processed_tx", tx_ref);
+
+    verifyPayment(tx_ref, amount);
+
+  }
+
 });

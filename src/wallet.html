@@ -305,6 +305,11 @@ console.log(currentUser.email);
 
         callback: async function(response){
 
+          if (response.status !== "successful") {
+    alert("Payment failed or was cancelled.");
+    return;
+}
+
           
           try{
 
