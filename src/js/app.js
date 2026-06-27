@@ -369,11 +369,18 @@ function setAmount(amount){
 
 async function verifyPayment(tx_ref, amount) {
 
-  const currentUser =
-    JSON.parse(localStorage.getItem("currentUser"));
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
   if (!currentUser) {
     alert("Login Required");
+    return;
+  }
+
+  const tx_id =
+  localStorage.getItem("pendingTxId") ||
+  localStorage.getItem("pendingTxRef");
+  if (!tx_id) {
+    alert("Transaction not found. Please try again.");
     return;
   }
 
@@ -384,20 +391,24 @@ async function verifyPayment(tx_ref, amount) {
     },
     body: JSON.stringify({
       email: currentUser.email,
-      amount,
-      transaction_id: tx_ref
+      amount: Number(amount),
+      transaction_id: tx_id
     })
   });
 
   const data = await response.json();
 
   if (data.success) {
-
     alert("Wallet Funded Successfully");
 
     currentUser.balance = data.balance;
-
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+    // cleanup
+    localStorage.removeItem("pendingTxRef");
+    localStorage.removeItem("pendingTxId");
+    localStorage.removeItem("pendingAmount");
+    localStorage.removeItem("processed_tx");
 
   } else {
     alert(data.message);
@@ -474,8 +485,7 @@ function makePayment(){
       "https://flutterwave.com/images/logo-colored.svg"
 
     },
-
- callback: function (response) {
+callback: function (response) {
 
   console.log("Flutterwave response:", response);
 
@@ -484,7 +494,8 @@ function makePayment(){
     return;
   }
 
-  localStorage.setItem("pendingTxId", response.transaction_id); // FIX
+  localStorage.setItem("pendingTxRef", response.tx_ref);
+  localStorage.setItem("pendingTxId", response.transaction_id);
   localStorage.setItem("pendingAmount", amount);
 
   window.location.href = "dashboard.html";
@@ -1034,14 +1045,23 @@ menuBtn.addEventListener("click", () => {
   sidebar.classList.toggle("hidden");
 });
 
-window.addEventListener("load", () => {
-const tx_id = localStorage.getItem("pendingTxId");
-const amount = localStorage.getItem("pendingAmount");
-const alreadyProcessed = localStorage.getItem("processed_tx");
+window.addEventListener("load", async () => {
 
-if (tx_id && amount && !alreadyProcessed) {
-  localStorage.setItem("processed_tx", tx_id);
-  verifyPayment(tx_id, amount);
-}
+  const tx_ref = localStorage.getItem("pendingTxRef");
+  const amount = localStorage.getItem("pendingAmount");
+  const processed = localStorage.getItem("processed_tx");
 
+  if (!tx_ref || !amount) return;
+
+  if (processed === tx_ref) return;
+
+  try {
+
+    localStorage.setItem("processed_tx", tx_ref);
+
+    await verifyPayment(tx_ref, amount);
+
+  } catch (err) {
+    console.log("Payment verify failed:", err);
+  }
 });

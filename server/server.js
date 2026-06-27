@@ -343,13 +343,12 @@ app.post("/update-wallet", async (req, res) => {
 
   try {
 
-    const response = await flw.Transaction.verify({
+    
+const response = await flw.Transaction.verify({
   id: transaction_id
 });
 
-console.log(response);
-
-if (response.data.status !== "successful") {
+if (!response.data || response.data.status !== "successful") {
   return res.json({
     success: false,
     message: "Payment not successful"
