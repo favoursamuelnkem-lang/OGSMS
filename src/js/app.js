@@ -475,7 +475,7 @@ function makePayment(){
 
     },
 
-  callback: function (response) {
+ callback: function (response) {
 
   console.log("Flutterwave response:", response);
 
@@ -484,14 +484,10 @@ function makePayment(){
     return;
   }
 
-  // IMPORTANT: save tx_ref (NOT transaction_id)
-  localStorage.setItem("pendingTxRef", response.tx_ref);
+  localStorage.setItem("pendingTxId", response.transaction_id); // FIX
   localStorage.setItem("pendingAmount", amount);
 
-  // wait a bit before redirect
-  setTimeout(() => {
-    window.location.href = "dashboard.html";
-  }, 1000);
+  window.location.href = "dashboard.html";
 },
     onclose: function(){
 
@@ -1039,16 +1035,13 @@ menuBtn.addEventListener("click", () => {
 });
 
 window.addEventListener("load", () => {
+const tx_id = localStorage.getItem("pendingTxId");
+const amount = localStorage.getItem("pendingAmount");
+const alreadyProcessed = localStorage.getItem("processed_tx");
 
-  const tx_ref = localStorage.getItem("pendingTxRef");
-  const amount = localStorage.getItem("pendingAmount");
-  const alreadyProcessed = localStorage.getItem("processed_tx");
-
-  if (tx_ref && amount && !alreadyProcessed) {
-
-    localStorage.setItem("processed_tx", tx_ref);
-
-    verifyPayment(tx_ref, amount);
-  }
+if (tx_id && amount && !alreadyProcessed) {
+  localStorage.setItem("processed_tx", tx_id);
+  verifyPayment(tx_id, amount);
+}
 
 });
