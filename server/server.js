@@ -343,15 +343,25 @@ app.post("/update-wallet", async (req, res) => {
   try {
     // VERIFY PAYMENT WITH FLUTTERWAVE
     const response = await flw.Transaction.verify({
-      id: transaction_id
-    });
+  id: transaction_id
+});
 
-    if (!response.data || response.data.status !== "successful") {
-      return res.json({
-        success: false,
-        message: "Payment not successful"
-      });
-    }
+const status = response?.data?.status;
+const amountPaid = response?.data?.amount;
+
+if (!response?.data) {
+  return res.json({
+    success: false,
+    message: "Invalid transaction"
+  });
+}
+
+if (status !== "successful" && status !== "completed") {
+  return res.json({
+    success: false,
+    message: "Payment not successful"
+  });
+}
 
     // GET REAL AMOUNT FROM FLUTTERWAVE
     const flwAmount = response.data.amount;
