@@ -406,6 +406,11 @@ app.post(
       const service =
       req.body.service;
 
+      console.log("Country:", country);
+console.log("Service:", service);
+
+let sellingPrice = 0;
+
        if (service === "whatsapp") {
     sellingPrice = 3500;
 }
