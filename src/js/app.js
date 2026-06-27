@@ -367,22 +367,14 @@ function setAmount(amount){
 // FUND WALLET
 // ======================
 
-async function verifyPayment(tx_ref, amount) {
+async function verifyPayment() {
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-  if (!currentUser) {
-    alert("Login Required");
-    return;
-  }
+  const tx_id = localStorage.getItem("pendingTxId");
+  const amount = localStorage.getItem("pendingAmount");
 
-  const tx_id =
-  localStorage.getItem("pendingTxId") ||
-  localStorage.getItem("pendingTxRef");
-  if (!tx_id) {
-    alert("Transaction not found. Please try again.");
-    return;
-  }
+  if (!currentUser || !tx_id || !amount) return;
 
   const response = await fetch(`${API_URL}/update-wallet`, {
     method: "POST",
@@ -404,11 +396,9 @@ async function verifyPayment(tx_ref, amount) {
     currentUser.balance = data.balance;
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
-    // cleanup
-    localStorage.removeItem("pendingTxRef");
+    // CLEANUP
     localStorage.removeItem("pendingTxId");
     localStorage.removeItem("pendingAmount");
-    localStorage.removeItem("processed_tx");
 
   } else {
     alert(data.message);
@@ -494,8 +484,8 @@ callback: function (response) {
     return;
   }
 
-  localStorage.setItem("pendingTxRef", response.tx_ref);
-  localStorage.setItem("pendingTxId", response.transaction_id);
+  // SAFE: always store correct id
+  localStorage.setItem("pendingTxId", response.transaction_id || response.id);
   localStorage.setItem("pendingAmount", amount);
 
   window.location.href = "dashboard.html";
@@ -1036,26 +1026,11 @@ if (logoutBtn) {
 
 }
 
+window.onload = () => {
+  verifyPayment();
+};
 
 
 
-window.addEventListener("load", async () => {
 
-  const tx_ref = localStorage.getItem("pendingTxRef");
-  const amount = localStorage.getItem("pendingAmount");
-  const processed = localStorage.getItem("processed_tx");
 
-  if (!tx_ref || !amount) return;
-
-  if (processed === tx_ref) return;
-
-  try {
-
-    localStorage.setItem("processed_tx", tx_ref);
-
-    await verifyPayment(tx_ref, amount);
-
-  } catch (err) {
-    console.log("Payment verify failed:", err);
-  }
-});

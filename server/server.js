@@ -331,7 +331,6 @@ app.post(
 // UPDATE WALLET
 // ======================
 app.post("/update-wallet", async (req, res) => {
-
   const { email, amount, transaction_id } = req.body;
 
   if (!email || !transaction_id) {
@@ -342,19 +341,22 @@ app.post("/update-wallet", async (req, res) => {
   }
 
   try {
+    // VERIFY PAYMENT WITH FLUTTERWAVE
+    const response = await flw.Transaction.verify({
+      id: transaction_id
+    });
 
-    
-const response = await flw.Transaction.verify({
-  id: transaction_id
-});
+    if (!response.data || response.data.status !== "successful") {
+      return res.json({
+        success: false,
+        message: "Payment not successful"
+      });
+    }
 
-if (!response.data || response.data.status !== "successful") {
-  return res.json({
-    success: false,
-    message: "Payment not successful"
-  });
-}
+    // GET REAL AMOUNT FROM FLUTTERWAVE
+    const flwAmount = response.data.amount;
 
+    // FIND USER
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -364,7 +366,8 @@ if (!response.data || response.data.status !== "successful") {
       });
     }
 
-    user.balance += Number(amount);
+    // UPDATE WALLET USING REAL AMOUNT
+    user.balance = user.balance + flwAmount;
     await user.save();
 
     return res.json({
@@ -380,9 +383,7 @@ if (!response.data || response.data.status !== "successful") {
       message: "Server error"
     });
   }
-
 });
-
 
 // ======================
 // BUY NUMBER
