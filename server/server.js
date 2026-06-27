@@ -715,6 +715,29 @@ catch(error){
 );
 
 // ======================
+// AUTO REFUND
+// ======================
+
+app.get("/auto-refund", async (req, res) => {
+
+  console.log("AUTO REFUND ROUTE WORKING");
+
+  res.json({
+
+    success: true,
+
+    message: "Auto refund route is working"
+
+  });
+
+});
+
+
+
+
+
+
+// ======================
 // GET LIVE PRICE
 // ======================
 
