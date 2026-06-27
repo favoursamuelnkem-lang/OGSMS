@@ -367,41 +367,47 @@ function setAmount(amount){
 // FUND WALLET
 // ======================
 
-async function verifyPayment() {
+async function verifyPayment(tx_id, amount) {
+
+  console.log("📡 VERIFY PAYMENT CALLED");
+  console.log("TX_ID:", tx_id);
+  console.log("AMOUNT:", amount);
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-  const tx_id = localStorage.getItem("pendingTxId");
-  const amount = localStorage.getItem("pendingAmount");
+  console.log("👤 CURRENT USER:", currentUser);
 
-  if (!currentUser || !tx_id || !amount) return;
+  if (!currentUser) {
+    console.log("❌ No user found");
+    return;
+  }
 
-  const response = await fetch(`${API_URL}/update-wallet`, {
+  const payload = {
+    email: currentUser.email,
+    amount,
+    transaction_id: tx_id
+  };
+
+  console.log("📤 SENDING TO BACKEND:", payload);
+
+  const res = await fetch(`${API_URL}/update-wallet`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      email: currentUser.email,
-      amount: Number(amount),
-      transaction_id: tx_id
-    })
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
   });
 
-  const data = await response.json();
+  const data = await res.json();
+
+  console.log("📥 BACKEND RESPONSE:", data);
 
   if (data.success) {
-    alert("Wallet Funded Successfully");
+    console.log("✅ WALLET UPDATED SUCCESSFULLY");
 
     currentUser.balance = data.balance;
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
-    // CLEANUP
-    localStorage.removeItem("pendingTxId");
-    localStorage.removeItem("pendingAmount");
-
   } else {
-    alert(data.message);
+    console.log("❌ WALLET UPDATE FAILED:", data.message);
   }
 }
 
@@ -477,22 +483,21 @@ function makePayment(){
     },
 callback: function (response) {
 
-  console.log("Flutterwave response:", response);
+  console.log("🔥 FLUTTERWAVE CALLBACK RESPONSE:");
+  console.log(response);
 
-  // ✅ FIXED SUCCESS CHECK
-  if (response.status === "successful" || response.status === "success") {
+  console.log("TX_REF:", response.tx_ref);
+  console.log("TX_ID:", response.transaction_id);
+  console.log("STATUS:", response.status);
+  console.log("AMOUNT:", response.amount);
 
-    localStorage.setItem("pendingTxRef", response.tx_ref);
-    localStorage.setItem("pendingTxId", response.transaction_id);
-    localStorage.setItem("pendingAmount", amount);
+  localStorage.setItem("pendingTxRef", response.tx_ref);
+  localStorage.setItem("pendingTxId", response.transaction_id);
+  localStorage.setItem("pendingAmount", amount);
 
-    window.location.href = "dashboard.html";
+  console.log("💾 SAVED TO LOCALSTORAGE");
 
-  } else {
-
-    alert("Payment failed or was cancelled");
-
-  }
+  window.location.href = "dashboard.html";
 },
     onclose: function(){
 
@@ -1032,27 +1037,29 @@ if (logoutBtn) {
 
 
 
-
 window.addEventListener("load", async () => {
 
-  setTimeout(async () => {
+  console.log("🚀 DASHBOARD LOADED");
 
-    const tx_ref = localStorage.getItem("pendingTxRef");
-    const amount = localStorage.getItem("pendingAmount");
-    const tx_id = localStorage.getItem("pendingTxId");
+  const tx_id = localStorage.getItem("pendingTxId");
+  const amount = localStorage.getItem("pendingAmount");
+  const tx_ref = localStorage.getItem("pendingTxRef");
 
-    if (!tx_ref || !amount || !tx_id) return;
+  console.log("📦 LOCALSTORAGE VALUES:");
+  console.log({ tx_id, amount, tx_ref });
 
-    await verifyPayment(tx_id, amount);
+  if (!tx_id || !amount) {
+    console.log("❌ Missing tx_id or amount — STOP");
+    return;
+  }
 
-    localStorage.removeItem("pendingTxRef");
-    localStorage.removeItem("pendingAmount");
-    localStorage.removeItem("pendingTxId");
+  console.log("⏳ Calling verifyPayment...");
 
-  }, 1000);
+  await verifyPayment(tx_id, amount);
 
+  console.log("🧹 Clearing storage");
+
+  localStorage.removeItem("pendingTxRef");
+  localStorage.removeItem("pendingTxId");
+  localStorage.removeItem("pendingAmount");
 });
-
-
-
-

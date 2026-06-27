@@ -331,6 +331,7 @@ app.post(
 // UPDATE WALLET
 // ======================
 app.post("/update-wallet", async (req, res) => {
+
   const { email, amount, transaction_id } = req.body;
 
   if (!email || !transaction_id) {
@@ -341,32 +342,24 @@ app.post("/update-wallet", async (req, res) => {
   }
 
   try {
-    // VERIFY PAYMENT WITH FLUTTERWAVE
+
+    console.log("🔥 UPDATE WALLET HIT");
+    console.log(req.body);
+
     const response = await flw.Transaction.verify({
-  id: transaction_id
-});
+      id: transaction_id
+    });
 
-const status = response?.data?.status;
-const amountPaid = response?.data?.amount;
+    console.log("🔥 FLUTTERWAVE VERIFY RESPONSE:");
+    console.log(response);
 
-if (!response?.data) {
-  return res.json({
-    success: false,
-    message: "Invalid transaction"
-  });
-}
+    if (!response.data || response.data.status !== "successful") {
+      return res.json({
+        success: false,
+        message: "Payment not successful"
+      });
+    }
 
-if (status !== "successful" && status !== "completed") {
-  return res.json({
-    success: false,
-    message: "Payment not successful"
-  });
-}
-
-    // GET REAL AMOUNT FROM FLUTTERWAVE
-    const flwAmount = response.data.amount;
-
-    // FIND USER
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -376,8 +369,7 @@ if (status !== "successful" && status !== "completed") {
       });
     }
 
-    // UPDATE WALLET USING REAL AMOUNT
-    user.balance = user.balance + flwAmount;
+    user.balance += Number(amount);
     await user.save();
 
     return res.json({
