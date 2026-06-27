@@ -720,14 +720,17 @@ catch(error){
 
 app.get("/auto-refund", async (req, res) => {
 
-  console.log("AUTO REFUND ROUTE WORKING");
+  console.log("Checking pending orders...");
+
+  const purchases = await PurchasedNumber.find({
+    status: "pending"
+  });
+
+  console.log("Pending orders:", purchases.length);
 
   res.json({
-
     success: true,
-
-    message: "Auto refund route is working"
-
+    pendingOrders: purchases.length
   });
 
 });
