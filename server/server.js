@@ -720,18 +720,66 @@ catch(error){
 
 app.get("/auto-refund", async (req, res) => {
 
-  console.log("Checking pending orders...");
+  try {
 
-  const purchases = await PurchasedNumber.find({
-    status: "pending"
-  });
+    const purchases = await PurchasedNumber.find({
+      status: "pending"
+    });
 
-  console.log("Pending orders:", purchases.length);
+    let refunded = 0;
 
-  res.json({
-    success: true,
-    pendingOrders: purchases.length
-  });
+    for (const purchase of purchases) {
+
+      const minutes =
+        (Date.now() - new Date(purchase.createdAt).getTime()) / 60000;
+
+      if (minutes >= 10) {
+
+        const user = await User.findOne({
+          email: purchase.userEmail
+        });
+
+        if (!user) {
+          continue;
+        }
+
+        user.balance += purchase.price;
+
+        await user.save();
+
+        purchase.status = "cancelled";
+
+        await purchase.save();
+
+        refunded++;
+
+      }
+
+    }
+
+    res.json({
+
+      success: true,
+
+      pendingOrders: purchases.length,
+
+      refunded
+
+    });
+
+  }
+
+  catch(error){
+
+    console.log(error);
+
+    res.json({
+
+      success: false
+
+    });
+
+  }
 
 });
 
