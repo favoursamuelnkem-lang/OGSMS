@@ -421,12 +421,8 @@ else if (service === "facebook") {
         sellingPrice = 900;
     }
 
-    else if (country === "uk") {
-        sellingPrice = 500;   // Change this to whatever UK price you want
-    }
-
     else {
-        sellingPrice = 600;   // All other countries
+        sellingPrice = 500;
     }
 
 }
