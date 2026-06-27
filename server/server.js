@@ -2,8 +2,14 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const axios = require("axios");
+const Flutterwave = require("flutterwave-node-v3");
 
 const app = express();
+
+const flw = new Flutterwave(
+  process.env.FLW_PUBLIC_KEY,
+  process.env.FLW_SECRET_KEY
+);
 
 
 // ======================
@@ -324,67 +330,59 @@ app.post(
 // ======================
 // UPDATE WALLET
 // ======================
+app.post("/update-wallet", async (req, res) => {
 
-app.post(
-  "/update-wallet",
-  async (req, res) => {
+  const { email, amount, transaction_id } = req.body;
 
-    console.log("UPDATE WALLET REQUEST:", req.body);
-
-
-    try {
-
-      const email =
-      req.body.email;
-
-      const amount =
-      req.body.amount;
-
-      const user =
-      await User.findOne({
-        email
-      });
-
-      if(!user){
-
-        return res.json({
-
-          success: false
-
-        });
-
-      }
-
-      user.balance +=
-      Number(amount);
-
-      await user.save();
-
-      res.json({
-
-        success: true,
-
-        balance:
-        user.balance
-
-      });
-
-    }
-
-    catch(error){
-
-      console.log(error);
-
-      res.json({
-
-        success: false
-
-      });
-
-    }
-
+  if (!email || !transaction_id) {
+    return res.json({
+      success: false,
+      message: "Invalid request"
+    });
   }
-);
+
+  try {
+
+    const response = await flw.Transaction.verify({
+      id: transaction_id
+    });
+
+    const data = response.data;
+
+    if (data.status !== "successful") {
+      return res.json({
+        success: false,
+        message: "Payment not verified"
+      });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    user.balance += Number(amount);
+    await user.save();
+
+    return res.json({
+      success: true,
+      balance: user.balance
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    return res.json({
+      success: false,
+      message: "Server error"
+    });
+  }
+
+});
 
 
 // ======================
