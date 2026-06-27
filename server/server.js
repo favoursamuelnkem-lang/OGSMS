@@ -406,28 +406,37 @@ app.post(
       const service =
       req.body.service;
 
-       let sellingPrice = 0;
-
-if(service === "whatsapp"){
-   sellingPrice = 2500;
+       if (service === "whatsapp") {
+    sellingPrice = 3500;
 }
 
-else if(service === "facebook"){
-   sellingPrice = 500;
+else if (service === "facebook") {
+
+    if (country === "usa") {
+        sellingPrice = 900;
+    }
+
+    else if (country === "uk") {
+        sellingPrice = 500;   // Change this to whatever UK price you want
+    }
+
+    else {
+        sellingPrice = 600;   // All other countries
+    }
+
 }
 
-else if(service === "telegram"){
-   sellingPrice = 1500;
+else if (service === "telegram") {
+    sellingPrice = 1500;
 }
 
-else if(service === "instagram"){
-   sellingPrice = 2200;
+else if (service === "instagram") {
+    sellingPrice = 2200;
 }
 
-else if(service === "gmail"){
-   sellingPrice = 2000;
+else if (service === "gmail") {
+    sellingPrice = 2000;
 }
-
       let user =
       await User.findOne({
 

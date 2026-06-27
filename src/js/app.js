@@ -777,29 +777,57 @@ serviceSelect.value
 
    
 
-    if(serviceSelect.value === "whatsapp"){
+   if (serviceSelect.value === "whatsapp") {
 
-        priceInput.value = "₦2500";
+    priceInput.value = "₦3500";
+
+}
+
+else if (serviceSelect.value === "facebook") {
+
+    if (countrySelect.value === "usa") {
+
+        priceInput.value = "₦900";
 
     }
 
-    else if(serviceSelect.value === "telegram"){
-
-        priceInput.value = "₦1000";
-
-    }
-
-    else if(serviceSelect.value === "facebook"){
+    else if (countrySelect.value === "uk") {
 
         priceInput.value = "₦500";
 
     }
 
-    else{
+    else {
 
-        priceInput.value = "₦3000";
+        priceInput.value = "₦500";
 
     }
+
+}
+
+else if (serviceSelect.value === "telegram") {
+
+    priceInput.value = "₦1500";
+
+}
+
+else if (serviceSelect.value === "instagram") {
+
+    priceInput.value = "₦2200";
+
+}
+
+else if (serviceSelect.value === "gmail") {
+
+    priceInput.value = "₦2000";
+
+}
+
+else {
+
+    priceInput.value = "₦3000";
+
+}
 
 }
 
