@@ -346,12 +346,13 @@ app.post("/update-wallet", async (req, res) => {
     const response = await flw.Transaction.verify({
   id: transaction_id
 });
-console.log("FLUTTERWAVE RESPONSE:", response);
+
+console.log(response);
 
 if (response.data.status !== "successful") {
   return res.json({
     success: false,
-    message: "Payment not verified"
+    message: "Payment not successful"
   });
 }
 
