@@ -479,16 +479,20 @@ callback: function (response) {
 
   console.log("Flutterwave response:", response);
 
-  if (response.status !== "successful") {
-    alert("Payment not successful");
-    return;
+  // ✅ FIXED SUCCESS CHECK
+  if (response.status === "successful" || response.status === "success") {
+
+    localStorage.setItem("pendingTxRef", response.tx_ref);
+    localStorage.setItem("pendingTxId", response.transaction_id);
+    localStorage.setItem("pendingAmount", amount);
+
+    window.location.href = "dashboard.html";
+
+  } else {
+
+    alert("Payment failed or was cancelled");
+
   }
-
-  // SAFE: always store correct id
-  localStorage.setItem("pendingTxId", response.transaction_id || response.id);
-  localStorage.setItem("pendingAmount", amount);
-
-  window.location.href = "dashboard.html";
 },
     onclose: function(){
 
@@ -1026,10 +1030,28 @@ if (logoutBtn) {
 
 }
 
-window.onload = () => {
-  verifyPayment();
-};
 
+
+
+window.addEventListener("load", async () => {
+
+  setTimeout(async () => {
+
+    const tx_ref = localStorage.getItem("pendingTxRef");
+    const amount = localStorage.getItem("pendingAmount");
+    const tx_id = localStorage.getItem("pendingTxId");
+
+    if (!tx_ref || !amount || !tx_id) return;
+
+    await verifyPayment(tx_id, amount);
+
+    localStorage.removeItem("pendingTxRef");
+    localStorage.removeItem("pendingAmount");
+    localStorage.removeItem("pendingTxId");
+
+  }, 1000);
+
+});
 
 
 
