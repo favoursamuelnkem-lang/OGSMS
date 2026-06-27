@@ -475,23 +475,21 @@ function makePayment(){
 
     },
 
-   callback: function (response) {
+  callback: function (response) {
 
   console.log(response);
 
-  if (!response.tx_ref) {
-    alert("Transaction failed");
+  if (response.status !== "successful") {
+    alert("Payment not successful");
     return;
   }
 
-  // save amount temporarily
   localStorage.setItem("pendingAmount", amount);
+  localStorage.setItem("pendingTxId", response.transaction_id);
 
-  // redirect to dashboard
   window.location.href =
-    `dashboard.html?tx_ref=${response.tx_ref}`;
+    `dashboard.html?tx_id=${response.transaction_id}`;
 },
-
     onclose: function(){
 
       console.log(
@@ -1041,18 +1039,15 @@ window.addEventListener("load", () => {
 
   const params = new URLSearchParams(window.location.search);
 
-  const tx_ref = params.get("tx_ref");
-
+  const tx_id = params.get("tx_id");
   const amount = localStorage.getItem("pendingAmount");
-
   const alreadyProcessed = localStorage.getItem("processed_tx");
 
-  if (tx_ref && amount && !alreadyProcessed) {
+  if (tx_id && amount && !alreadyProcessed) {
 
-    localStorage.setItem("processed_tx", tx_ref);
+    localStorage.setItem("processed_tx", tx_id);
 
-    verifyPayment(tx_ref, amount);
-
+    verifyPayment(tx_id, amount);
   }
 
 });
