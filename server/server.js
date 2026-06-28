@@ -46,59 +46,35 @@ mongoose.connect(
 // ======================
 // USER SCHEMA
 // ======================
-const userSchema = new mongoose.Schema({
+// ======================
+// USER SCHEMA + MODEL
+// ======================
 
+const userSchema = new mongoose.Schema({
   fullName: String,
   email: String,
   password: String,
-
-  balance: {
-    type: Number,
-    default: 0
-  },
-
-  // ADD THIS LINE
+  balance: { type: Number, default: 0 },
   processedTxIds: { type: [String], default: [] }
-
 });
+
+const User = mongoose.model("User", userSchema); // ✅ THIS WAS MISSING
+
 // ======================
-// NUMBER SCHEMA
+// NUMBER SCHEMA + MODEL
 // ======================
 
-const numberSchema =
-new mongoose.Schema({
-
+const numberSchema = new mongoose.Schema({
   userEmail: String,
-
   number: String,
-
   orderId: String,
-
   service: String,
-
   price: Number,
-
-  status: {
-  type: String,
-  default: "pending"
-},
-
-  createdAt: {
-
-    type: Date,
-
-    default: Date.now
-
-  }
-
+  status: { type: String, default: "pending" },
+  createdAt: { type: Date, default: Date.now }
 });
 
-const PurchasedNumber =
-mongoose.model(
-  "PurchasedNumber",
-  numberSchema
-);
-
+const PurchasedNumber = mongoose.model("PurchasedNumber", numberSchema);
 
 // ======================
 // REGISTER
