@@ -307,12 +307,20 @@ app.post("/update-wallet", async (req, res) => {
   }
 
   try {
-    const response = await flw.Transaction.verify({ id: transaction_id });
+    // ✅ VERIFY MANUALLY INSTEAD OF USING flw.Transaction.verify()
+    const verifyRes = await axios.get(
+      `https://api.flutterwave.com/v3/transactions/${transaction_id}/verify`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`
+        }
+      }
+    );
 
-    console.log("🔥 FLW VERIFY STATUS:", response.data?.status);
-    console.log("🔥 FLW FULL RESPONSE:", JSON.stringify(response.data));
+    console.log("🔥 FLW VERIFY STATUS:", verifyRes.data?.data?.status);
+    console.log("🔥 FLW FULL RESPONSE:", JSON.stringify(verifyRes.data?.data));
 
-    if (!response.data || response.data.status !== "successful") {
+    if (!verifyRes.data?.data || verifyRes.data?.data?.status !== "successful") {
       return res.json({ success: false, message: "Payment not successful" });
     }
 
@@ -332,7 +340,7 @@ app.post("/update-wallet", async (req, res) => {
     return res.json({ success: true, balance: user.balance });
 
   } catch (error) {
-    console.log("❌ ERROR:", error);
+    console.log("❌ ERROR:", error.response?.data || error.message);
     return res.json({ success: false, message: "Server error" });
   }
 
