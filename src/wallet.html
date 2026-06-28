@@ -200,203 +200,93 @@
 
   </main>
 
-  <script>
-    const API_URL = "https://ogsms-3.onrender.com";
+ <script>
+  const API_URL = "https://ogsms-3.onrender.com";
 
-    // LOAD USER
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-    const currentUser =
-    JSON.parse(
-      localStorage.getItem(
-        "currentUser"
-      )
-    );
+  if (!currentUser) {
+    window.location.href = "login.html";
+  }
 
-    console.log(currentUser);
-console.log(currentUser.email);
+  // LOAD BALANCE
+  if (currentUser) {
+    document.getElementById("walletBalance").innerText =
+      "₦" + Number(currentUser.balance || 0).toLocaleString();
+  }
 
+  // QUICK AMOUNT
+  function setAmount(amount) {
+    document.getElementById("amount").value = amount;
+  }
 
+  // PAYMENT
+  function makePayment() {
+    const amount = document.getElementById("amount").value;
 
-
-    // LOAD BALANCE
-
-    if(currentUser){
-
-      document.getElementById(
-        "walletBalance"
-      ).innerText =
-
-      "₦" +
-
-      Number(
-        currentUser.balance || 0
-      ).toLocaleString();
-
+    if (amount === "") {
+      alert("Enter amount");
+      return;
     }
 
-    // QUICK AMOUNT
+    FlutterwaveCheckout({
+      public_key: "FLWPUBK-ab46a67dfb1a6016ae7159462676aee7-X",
+      tx_ref: "OGSMS-" + Date.now(),
+      amount: amount,
+      currency: "NGN",
+      payment_options: "card,banktransfer,ussd",
+      customer: {
+        email: currentUser.email,
+        name: currentUser.fullName
+      },
+      customizations: {
+        title: "OGSMS Wallet Funding",
+        description: "Wallet Deposit",
+        logo: "https://flutterwave.com/images/logo-colored.svg"
+      },
 
-    function setAmount(amount){
+      callback: async function (response) {
 
-      document.getElementById(
-        "amount"
-      ).value = amount;
+        console.log("FLW RESPONSE:", response);
 
-    }
-
-    // PAYMENT
-
-    function makePayment(){
-
-      const amount =
-      document.getElementById(
-        "amount"
-      ).value;
-
-      if(amount === ""){
-
-        alert(
-          "Enter amount"
-        );
-
-        return;
-
-      }
-
-      FlutterwaveCheckout({
-
-        public_key:
-        "FLWPUBK-ab46a67dfb1a6016ae7159462676aee7-X",
-
-        tx_ref:
-        "OGSMS-" + Date.now(),
-
-        amount:
-        amount,
-
-        currency:
-        "NGN",
-
-        payment_options:
-        "card,banktransfer,ussd",
-
-        customer: {
-
-          email:
-          currentUser.email,
-
-          name:
-          currentUser.fullName
-
-        },
-
-        customizations: {
-
-          title:
-          "OGSMS Wallet Funding",
-
-          description:
-          "Wallet Deposit",
-
-          logo:
-          "https://flutterwave.com/images/logo-colored.svg"
-
-        },
-
-        callback: async function(response){
-
-          if (response.status !== "successful") {
-    alert("Payment failed or was cancelled.");
-    return;
-}
-
-          
-          try{
-
-            const update =
-           await fetch(
-  `${API_URL}/update-wallet`,
-
-              {
-
-                method: "POST",
-
-                headers: {
-
-                  "Content-Type":
-                  "application/json"
-
-                },
-
-                body: JSON.stringify({
-
-                  email:
-                  currentUser.email,
-
-                  amount:
-                  amount
-
-                })
-
-              }
-
-            );
-
-            const data = await update.json();
-
-
-
-            if(data.success){
-
-              currentUser.balance =
-              data.balance;
-
-              localStorage.setItem(
-
-                "currentUser",
-
-                JSON.stringify(
-                  currentUser
-                )
-
-              );
-
-              alert(
-                "Wallet Funded Successfully"
-              );
-
-              location.reload();
-
-            }
-
-          }
-
-          catch(error){
-
-            console.log(error);
-
-            alert(
-              "Server Error"
-            );
-
-          }
-
-        },
-
-        onclose: function(){
-
-          console.log(
-            "Payment Closed"
-          );
-
+        // ✅ CHECK STATUS AND GET TRANSACTION ID
+        if (response.status !== "successful" || !response.transaction_id) {
+          alert("Payment failed or was cancelled.");
+          return;
         }
 
-      });
+        try {
+          const update = await fetch(`${API_URL}/update-wallet`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: currentUser.email,
+              amount: amount,
+              transaction_id: response.transaction_id  // ✅ THIS WAS MISSING
+            })
+          });
 
-    }
+          const data = await update.json();
+          console.log("BACKEND RESPONSE:", data);
 
-  </script>
+          if (data.success) {
+            currentUser.balance = data.balance;
+            localStorage.setItem("currentUser", JSON.stringify(currentUser));
+            alert("✅ Wallet Funded Successfully!");
+            location.reload();
+          } else {
+            alert("Failed: " + data.message);
+          }
 
-</body>
+        } catch (error) {
+          console.log(error);
+          alert("Server Error");
+        }
+      },
 
-</html>
+      onclose: function () {
+        console.log("Payment Closed");
+      }
+    });
+  }
+</script>
