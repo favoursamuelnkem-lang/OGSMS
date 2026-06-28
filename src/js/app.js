@@ -483,21 +483,21 @@ function makePayment(){
     },
 callback: function (response) {
 
-  console.log("🔥 FLUTTERWAVE CALLBACK RESPONSE:");
-  console.log(response);
+  console.log("FLUTTERWAVE RESPONSE:", response);
 
-  console.log("TX_REF:", response.tx_ref);
-  console.log("TX_ID:", response.transaction_id);
-  console.log("STATUS:", response.status);
-  console.log("AMOUNT:", response.amount);
+  if (!response.transaction_id) {
+    alert("Payment not completed");
+    return;
+  }
 
   localStorage.setItem("pendingTxRef", response.tx_ref);
   localStorage.setItem("pendingTxId", response.transaction_id);
   localStorage.setItem("pendingAmount", amount);
 
-  console.log("💾 SAVED TO LOCALSTORAGE");
-
-  window.location.href = "dashboard.html";
+  // IMPORTANT: DO NOT rely on dashboard reload
+  setTimeout(() => {
+    window.location.href = "dashboard.html";
+  }, 500);
 },
     onclose: function(){
 
@@ -1036,30 +1036,15 @@ if (logoutBtn) {
 }
 
 
-
 window.addEventListener("load", async () => {
-
-  console.log("🚀 DASHBOARD LOADED");
 
   const tx_id = localStorage.getItem("pendingTxId");
   const amount = localStorage.getItem("pendingAmount");
-  const tx_ref = localStorage.getItem("pendingTxRef");
-
-  console.log("📦 LOCALSTORAGE VALUES:");
-  console.log({ tx_id, amount, tx_ref });
 
   if (!tx_id || !amount) {
-    console.log("❌ Missing tx_id or amount — STOP");
+    console.log("No payment to verify");
     return;
   }
 
-  console.log("⏳ Calling verifyPayment...");
-
   await verifyPayment(tx_id, amount);
-
-  console.log("🧹 Clearing storage");
-
-  localStorage.removeItem("pendingTxRef");
-  localStorage.removeItem("pendingTxId");
-  localStorage.removeItem("pendingAmount");
 });
