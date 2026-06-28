@@ -295,28 +295,32 @@ app.post(
 // UPDATE WALLET
 // ======================
 app.post("/update-wallet", async (req, res) => {
-
   const { email, amount, transaction_id } = req.body;
+
+  console.log("📥 UPDATE WALLET HIT");
+  console.log("EMAIL:", email);
+  console.log("AMOUNT:", amount);
+  console.log("TRANSACTION ID:", transaction_id);
 
   if (!email || !transaction_id) {
     return res.json({ success: false, message: "Invalid request" });
   }
 
   try {
-
     const response = await flw.Transaction.verify({ id: transaction_id });
+
+    console.log("🔥 FLW VERIFY STATUS:", response.data?.status);
+    console.log("🔥 FLW FULL RESPONSE:", JSON.stringify(response.data));
 
     if (!response.data || response.data.status !== "successful") {
       return res.json({ success: false, message: "Payment not successful" });
     }
 
     const user = await User.findOne({ email });
-
     if (!user) {
       return res.json({ success: false, message: "User not found" });
     }
 
-    // PREVENT DOUBLE CREDIT
     if (user.processedTxIds.includes(String(transaction_id))) {
       return res.json({ success: false, message: "Already processed" });
     }
@@ -328,7 +332,7 @@ app.post("/update-wallet", async (req, res) => {
     return res.json({ success: true, balance: user.balance });
 
   } catch (error) {
-    console.log(error);
+    console.log("❌ ERROR:", error);
     return res.json({ success: false, message: "Server error" });
   }
 
