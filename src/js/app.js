@@ -486,18 +486,18 @@ callback: function (response) {
   console.log("FLUTTERWAVE RESPONSE:", response);
 
   if (!response.transaction_id) {
-    alert("Payment not completed");
+    alert("Payment failed");
     return;
   }
 
-  localStorage.setItem("pendingTxRef", response.tx_ref);
   localStorage.setItem("pendingTxId", response.transaction_id);
+  localStorage.setItem("pendingTxRef", response.tx_ref);
   localStorage.setItem("pendingAmount", amount);
 
-  // IMPORTANT: DO NOT rely on dashboard reload
+  // IMPORTANT: delay redirect slightly
   setTimeout(() => {
     window.location.href = "dashboard.html";
-  }, 500);
+  }, 800);
 },
     onclose: function(){
 
@@ -1038,13 +1038,30 @@ if (logoutBtn) {
 
 window.addEventListener("load", async () => {
 
-  const tx_id = localStorage.getItem("pendingTxId");
-  const amount = localStorage.getItem("pendingAmount");
+  console.log("🔥 DASHBOARD LOADED");
 
-  if (!tx_id || !amount) {
-    console.log("No payment to verify");
-    return;
+  const pendingTxId = localStorage.getItem("pendingTxId");
+  const pendingAmount = localStorage.getItem("pendingAmount");
+
+  console.log("TX:", pendingTxId);
+  console.log("AMOUNT:", pendingAmount);
+
+  if (pendingTxId && pendingAmount) {
+
+    console.log("💳 Found pending payment, verifying...");
+
+    // Clear first to prevent double crediting
+    localStorage.removeItem("pendingTxId");
+    localStorage.removeItem("pendingTxRef");
+    localStorage.removeItem("pendingAmount");
+
+    await verifyPayment(pendingTxId, pendingAmount);
+
+    // Refresh wallet display
+    await loadUserData();
+
+    alert("✅ Wallet funded successfully!");
+
   }
 
-  await verifyPayment(tx_id, amount);
 });

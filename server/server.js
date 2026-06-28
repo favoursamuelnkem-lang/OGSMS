@@ -46,33 +46,21 @@ mongoose.connect(
 // ======================
 // USER SCHEMA
 // ======================
-
-const userSchema =
-new mongoose.Schema({
+const userSchema = new mongoose.Schema({
 
   fullName: String,
-
   email: String,
-
   password: String,
 
   balance: {
-
     type: Number,
-
     default: 0
+  },
 
-  }
+  // ADD THIS LINE
+  processedTxIds: { type: [String], default: [] }
 
 });
-
-const User =
-mongoose.model(
-  "User",
-  userSchema
-);
-
-
 // ======================
 // NUMBER SCHEMA
 // ======================
@@ -335,56 +323,39 @@ app.post("/update-wallet", async (req, res) => {
   const { email, amount, transaction_id } = req.body;
 
   if (!email || !transaction_id) {
-    return res.json({
-      success: false,
-      message: "Invalid request"
-    });
+    return res.json({ success: false, message: "Invalid request" });
   }
 
   try {
 
-    console.log("🔥 UPDATE WALLET HIT");
-    console.log(req.body);
-
-    const response = await flw.Transaction.verify({
-      id: transaction_id
-    });
-
-    console.log("🔥 FLUTTERWAVE VERIFY RESPONSE:");
-    console.log(response);
+    const response = await flw.Transaction.verify({ id: transaction_id });
 
     if (!response.data || response.data.status !== "successful") {
-      return res.json({
-        success: false,
-        message: "Payment not successful"
-      });
+      return res.json({ success: false, message: "Payment not successful" });
     }
 
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.json({
-        success: false,
-        message: "User not found"
-      });
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    // PREVENT DOUBLE CREDIT
+    if (user.processedTxIds.includes(String(transaction_id))) {
+      return res.json({ success: false, message: "Already processed" });
     }
 
     user.balance += Number(amount);
+    user.processedTxIds.push(String(transaction_id));
     await user.save();
 
-    return res.json({
-      success: true,
-      balance: user.balance
-    });
+    return res.json({ success: true, balance: user.balance });
 
   } catch (error) {
     console.log(error);
-
-    return res.json({
-      success: false,
-      message: "Server error"
-    });
+    return res.json({ success: false, message: "Server error" });
   }
+
 });
 
 // ======================
