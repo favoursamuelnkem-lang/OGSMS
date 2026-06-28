@@ -228,17 +228,16 @@
       alert("Enter amount");
       return;
     }
-
-    FlutterwaveCheckout({
-      FLWPUBK_TEST: "FLWPUBK_TEST-cceba296b083a160e07884aaba28319c-X",
-      tx_ref: "OGSMS-" + Date.now(),
-      amount: amount,
-      currency: "NGN",
-      payment_options: "card,banktransfer,ussd",
-      customer: {
-        email: currentUser.email,
-        name: currentUser.fullName
-      },
+FlutterwaveCheckout({
+  public_key: "FLWPUBK_TEST-cceba296b083a160e07884aaba28319c-X",  // 👈 change this
+  tx_ref: "OGSMS-" + Date.now(),
+  amount: amount,
+  currency: "NGN",
+  payment_options: "card,banktransfer,ussd",
+  customer: {
+    email: currentUser.email,
+    name: currentUser.fullName
+  },
       customizations: {
         title: "OGSMS Wallet Funding",
         description: "Wallet Deposit",
