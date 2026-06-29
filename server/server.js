@@ -19,6 +19,25 @@ const flw = new Flutterwave(
 app.use(cors());
 app.use(express.json());
 
+app.get("/test-flw", async (req, res) => {
+  try {
+    const verifyRes = await axios.get(
+      "https://api.flutterwave.com/v3/transactions/2060206884/verify",
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`
+        }
+      }
+    );
+    res.json({ success: true, data: verifyRes.data });
+  } catch (error) {
+    res.json({ 
+      success: false, 
+      error: error.response?.data || error.message,
+      key_found: !!process.env.FLW_SECRET_KEY
+    });
+  }
+});
 
 // ======================
 // CONNECT MONGODB
@@ -294,9 +313,13 @@ app.post(
 // ======================
 // UPDATE WALLET
 // ======================
+// ======================
+// UPDATE WALLET
+// ======================
 app.post("/update-wallet", async (req, res) => {
   console.log("🔑 SECRET KEY:", process.env.FLW_SECRET_KEY ? "✅ FOUND" : "❌ MISSING");
-  // ... rest of your code
+
+  const { email, amount, transaction_id } = req.body;
 
   console.log("📥 UPDATE WALLET HIT");
   console.log("EMAIL:", email);
@@ -308,7 +331,6 @@ app.post("/update-wallet", async (req, res) => {
   }
 
   try {
-    // ✅ VERIFY MANUALLY INSTEAD OF USING flw.Transaction.verify()
     const verifyRes = await axios.get(
       `https://api.flutterwave.com/v3/transactions/${transaction_id}/verify`,
       {
@@ -319,7 +341,6 @@ app.post("/update-wallet", async (req, res) => {
     );
 
     console.log("🔥 FLW VERIFY STATUS:", verifyRes.data?.data?.status);
-    console.log("🔥 FLW FULL RESPONSE:", JSON.stringify(verifyRes.data?.data));
 
     if (!verifyRes.data?.data || verifyRes.data?.data?.status !== "successful") {
       return res.json({ success: false, message: "Payment not successful" });
@@ -342,9 +363,8 @@ app.post("/update-wallet", async (req, res) => {
 
   } catch (error) {
     console.log("❌ ERROR:", error.response?.data || error.message);
-    return res.json({ success: false, message: "Server error" });
+    return res.json({ success: false, message: error.response?.data?.message || error.message });
   }
-
 });
 
 // ======================
