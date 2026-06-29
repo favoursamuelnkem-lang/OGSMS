@@ -19,25 +19,7 @@ const flw = new Flutterwave(
 app.use(cors());
 app.use(express.json());
 
-app.get("/test-flw", async (req, res) => {
-  try {
-    const verifyRes = await axios.get(
-      "https://api.flutterwave.com/v3/transactions/2060206884/verify",
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`
-        }
-      }
-    );
-    res.json({ success: true, data: verifyRes.data });
-  } catch (error) {
-    res.json({ 
-      success: false, 
-      error: error.response?.data || error.message,
-      key_found: !!process.env.FLW_SECRET_KEY
-    });
-  }
-});
+
 
 // ======================
 // CONNECT MONGODB
