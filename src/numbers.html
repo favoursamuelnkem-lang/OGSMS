@@ -69,8 +69,8 @@
         </li>
 
         <li>
-          <a href="sms.html" class="block hover:text-orange-300 transition">
-            SMS Inbox
+          <a href="history.html" class="block hover:text-orange-300 transition">
+            Purchase History
           </a>
         </li>
 
@@ -265,6 +265,15 @@ class="w-full mt-3 px-5 py-4 rounded-2xl border border-gray-200 outline-none"
     </main>
 
   </div>
+
+  <script>
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.getElementById("sidebar");
+
+menuBtn.addEventListener("click", () => {
+  sidebar.classList.toggle("hidden");
+});
+</script>
 
   <script src="js/app.js"></script>
 
