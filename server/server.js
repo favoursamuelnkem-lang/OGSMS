@@ -295,7 +295,8 @@ app.post(
 // UPDATE WALLET
 // ======================
 app.post("/update-wallet", async (req, res) => {
-  const { email, amount, transaction_id } = req.body;
+  console.log("🔑 SECRET KEY:", process.env.FLW_SECRET_KEY ? "✅ FOUND" : "❌ MISSING");
+  // ... rest of your code
 
   console.log("📥 UPDATE WALLET HIT");
   console.log("EMAIL:", email);
