@@ -1036,32 +1036,3 @@ if (logoutBtn) {
 }
 
 
-window.addEventListener("load", async () => {
-
-  console.log("🔥 DASHBOARD LOADED");
-
-  const pendingTxId = localStorage.getItem("pendingTxId");
-  const pendingAmount = localStorage.getItem("pendingAmount");
-
-  console.log("TX:", pendingTxId);
-  console.log("AMOUNT:", pendingAmount);
-
-  if (pendingTxId && pendingAmount) {
-
-    console.log("💳 Found pending payment, verifying...");
-
-    // Clear first to prevent double crediting
-    localStorage.removeItem("pendingTxId");
-    localStorage.removeItem("pendingTxRef");
-    localStorage.removeItem("pendingAmount");
-
-    await verifyPayment(pendingTxId, pendingAmount);
-
-    // Refresh wallet display
-    await loadUserData();
-
-    alert("✅ Wallet funded successfully!");
-
-  }
-
-});
