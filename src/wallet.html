@@ -244,7 +244,7 @@
       callback: async function (response) {
         console.log("FLW RESPONSE:", response);
 
-        if (response.status !== "successful" || !response.transaction_id) {
+       if (!response.transaction_id) {
           alert("Payment failed or was cancelled.");
           return;
         }
