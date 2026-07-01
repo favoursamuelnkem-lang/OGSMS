@@ -292,6 +292,7 @@ app.post(
 );
 
 
+
 // ======================
 // UPDATE WALLET
 // ======================
@@ -963,7 +964,45 @@ console.log("PURCHASES FOUND:", purchases);
 );
 
 
+// ======================
+// ADMIN DASHBOARD
+// ======================
 
+app.get("/admin/dashboard", async (req, res) => {
+
+    try {
+
+        const totalUsers = await User.countDocuments();
+
+        const numbersSold = await PurchasedNumber.countDocuments();
+
+        const pendingOrders = await PurchasedNumber.countDocuments({
+            status: "pending"
+        });
+
+        const cancelledOrders = await PurchasedNumber.countDocuments({
+            status: "cancelled"
+        });
+
+        res.json({
+            success: true,
+            totalUsers,
+            numbersSold,
+            pendingOrders,
+            cancelledOrders
+        });
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.json({
+            success: false
+        });
+
+    }
+
+});
 
 // ======================
 // SERVER
