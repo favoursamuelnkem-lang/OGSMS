@@ -56,37 +56,47 @@ purchaseData.purchases.forEach((purchase) => {
 
             <div class="flex justify-between items-center">
 
-                <h3 class="font-bold text-[#0B4F63]">
+                <h3 class="font-semibold text-sm break-all text-[#0B4F63]">
                     ${purchase.userEmail}
                 </h3>
 
-                <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
-                    ${purchase.status}
-                </span>
+               <span class="
+    text-[10px]
+    px-2
+    py-1
+    rounded-full
+    ${
+        purchase.status === "successful"
+            ? "bg-green-100 text-green-700"
+            : purchase.status === "cancelled"
+            ? "bg-red-100 text-red-700"
+            : "bg-yellow-100 text-yellow-700"
+    }
+">
+    ${purchase.status}
+</span>
 
             </div>
 
-            <div class="mt-4 space-y-2 text-sm">
+           <div class="mt-2">
+    <p class="text-gray-500 text-xs">Number</p>
+    <p class="text-sm break-all">${purchase.number}</p>
+</div>
 
-                <div class="flex justify-between">
-                    <span class="text-gray-500">Number</span>
-                    <span>${purchase.number}</span>
-                </div>
+<div class="mt-2">
+    <p class="text-gray-500 text-xs">Service</p>
+    <p class="text-sm">${purchase.service}</p>
+</div>
 
-                <div class="flex justify-between">
-                    <span class="text-gray-500">Service</span>
-                    <span>${purchase.service}</span>
-                </div>
+<div class="mt-2">
+    <p class="text-gray-500 text-xs">Price</p>
+    <p class="text-sm">₦${purchase.price}</p>
+</div>
 
-                <div class="flex justify-between">
-                    <span class="text-gray-500">Price</span>
-                    <span>₦${purchase.price}</span>
-                </div>
-
-                <div class="flex justify-between">
-                    <span class="text-gray-500">Date</span>
-                    <span>${new Date(purchase.createdAt).toLocaleDateString()}</span>
-                </div>
+<div class="mt-2">
+    <p class="text-gray-500 text-xs">Date</p>
+    <p class="text-sm">${new Date(purchase.createdAt).toLocaleDateString()}</p>
+</div>
 
             </div>
 
