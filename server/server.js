@@ -1022,25 +1022,7 @@ walletResult.length > 0
 ? walletResult[0].totalWallet
 : 0;
 
-app.get("/admin/users", async (req, res) => {
-    try {
-        const users = await User.find()
-            .select("fullName email balance createdAt")
-            .sort({ createdAt: -1 });
 
-        res.json({
-            success: true,
-            users
-        });
-
-    } catch (err) {
-        console.log(err);
-
-        res.json({
-            success: false
-        });
-    }
-});
        res.json({
   success: true,
   totalUsers,
@@ -1061,6 +1043,26 @@ app.get("/admin/users", async (req, res) => {
 
     }
 
+});
+
+app.get("/admin/users", async (req, res) => {
+    try {
+        const users = await User.find()
+            .select("fullName email balance createdAt")
+            .sort({ createdAt: -1 });
+
+        res.json({
+            success: true,
+            users
+        });
+
+    } catch (err) {
+        console.log(err);
+
+        res.json({
+            success: false
+        });
+    }
 });
 
 // ======================

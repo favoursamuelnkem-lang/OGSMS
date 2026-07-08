@@ -105,6 +105,32 @@ purchaseData.purchases.forEach((purchase) => {
 
 });
 
+const usersResponse = await fetch(`${API_URL}/admin/users`);
+
+const usersData = await usersResponse.json();
+
+const usersTable = document.getElementById("recentUsersTable");
+
+usersTable.innerHTML = "";
+
+usersData.users.slice(0, 5).forEach((user) => {
+
+    usersTable.innerHTML += `
+        <tr class="border-t">
+            <td class="px-6 py-5">${user.fullName}</td>
+            <td class="px-6 py-5">${user.email}</td>
+            <td class="px-6 py-5">₦${user.balance.toLocaleString()}</td>
+            <td class="px-6 py-5">${new Date(user.createdAt).toLocaleDateString()}</td>
+            <td class="px-6 py-5">
+                <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+                    Active
+                </span>
+            </td>
+        </tr>
+    `;
+
+});
+
 
 
     } catch (error) {
