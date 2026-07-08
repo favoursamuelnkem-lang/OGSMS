@@ -43,6 +43,57 @@ purchaseData.purchases.forEach((purchase) => {
     `;
 
 });
+
+
+const cards = document.getElementById("purchaseCards");
+
+cards.innerHTML = "";
+
+purchaseData.purchases.forEach((purchase) => {
+
+    cards.innerHTML += `
+        <div class="border rounded-2xl p-5 shadow-sm">
+
+            <div class="flex justify-between items-center">
+
+                <h3 class="font-bold text-[#0B4F63]">
+                    ${purchase.userEmail}
+                </h3>
+
+                <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
+                    ${purchase.status}
+                </span>
+
+            </div>
+
+            <div class="mt-4 space-y-2 text-sm">
+
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Number</span>
+                    <span>${purchase.number}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Service</span>
+                    <span>${purchase.service}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Price</span>
+                    <span>₦${purchase.price}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Date</span>
+                    <span>${new Date(purchase.createdAt).toLocaleDateString()}</span>
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+});
     } catch (error) {
 
         console.log(error);
