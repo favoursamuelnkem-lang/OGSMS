@@ -1048,6 +1048,35 @@ walletResult.length > 0
 
  const PORT = process.env.PORT || 5000;
 
+ // ======================
+// ADMIN RECENT PURCHASES
+// ======================
+
+app.get("/admin/recent-purchases", async (req, res) => {
+
+  try {
+
+    const purchases = await PurchasedNumber.find()
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    res.json({
+      success: true,
+      purchases
+    });
+
+  } catch (err) {
+
+    console.log(err);
+
+    res.json({
+      success: false
+    });
+
+  }
+
+});
+
 app.listen(PORT, () => {
 
   console.log(
