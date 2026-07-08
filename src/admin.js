@@ -10,6 +10,12 @@ async function loadDashboard() {
 
         console.log(data);
 
+        document.getElementById("totalUsers").textContent = data.totalUsers;
+document.getElementById("numbersSold").textContent = data.numbersSold;
+document.getElementById("pendingOrders").textContent = data.pendingOrders;
+document.getElementById("cancelledOrders").textContent = data.cancelledOrders;
+document.getElementById("totalRevenue").textContent =
+"₦" + data.totalRevenue.toLocaleString();
     } catch (error) {
 
         console.log(error);

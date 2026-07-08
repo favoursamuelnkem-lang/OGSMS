@@ -984,13 +984,35 @@ app.get("/admin/dashboard", async (req, res) => {
             status: "cancelled"
         });
 
-        res.json({
-            success: true,
-            totalUsers,
-            numbersSold,
-            pendingOrders,
-            cancelledOrders
-        });
+        const revenueResult = await PurchasedNumber.aggregate([
+  {
+    $match: {
+      status: "successful"
+    }
+  },
+  {
+    $group: {
+      _id: null,
+      totalRevenue: {
+        $sum: "$price"
+      }
+    }
+  }
+]);
+
+const totalRevenue =
+  revenueResult.length > 0
+    ? revenueResult[0].totalRevenue
+    : 0;
+
+       res.json({
+  success: true,
+  totalUsers,
+  numbersSold,
+  pendingOrders,
+  cancelledOrders,
+  totalRevenue
+});
 
     } catch (err) {
 
