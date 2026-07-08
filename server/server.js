@@ -1005,13 +1005,29 @@ const totalRevenue =
     ? revenueResult[0].totalRevenue
     : 0;
 
+    const walletResult = await User.aggregate([
+  {
+    $group: {
+      _id: null,
+      totalWallet: {
+        $sum: "$balance"
+      }
+    }
+  }
+]);
+
+const totalWallet =
+walletResult.length > 0
+? walletResult[0].totalWallet
+: 0;
        res.json({
   success: true,
   totalUsers,
   numbersSold,
   pendingOrders,
   cancelledOrders,
-  totalRevenue
+  totalRevenue,
+  totalWallet
 });
 
     } catch (err) {

@@ -16,6 +16,9 @@ document.getElementById("pendingOrders").textContent = data.pendingOrders;
 document.getElementById("cancelledOrders").textContent = data.cancelledOrders;
 document.getElementById("totalRevenue").textContent =
 "₦" + data.totalRevenue.toLocaleString();
+
+document.getElementById("walletBalance").textContent =
+"₦" + data.totalWallet.toLocaleString();
     } catch (error) {
 
         console.log(error);
