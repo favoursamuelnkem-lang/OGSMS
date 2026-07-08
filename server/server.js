@@ -52,11 +52,12 @@ mongoose.connect(
 // ======================
 
 const userSchema = new mongoose.Schema({
-  fullName: String,
-  email: String,
-  password: String,
-  balance: { type: Number, default: 0 },
-  processedTxIds: { type: [String], default: [] }
+    fullName: String,
+    email: String,
+    password: String,
+    balance: { type: Number, default: 0 },
+    processedTxIds: { type: [String], default: [] },
+    createdAt: { type: Date, default: Date.now }
 });
 
 const User = mongoose.model("User", userSchema); // ✅ THIS WAS MISSING
