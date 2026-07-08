@@ -66,6 +66,51 @@ async function loadUsers() {
 
         });
 
+        const userCards = document.getElementById("userCards");
+
+userCards.innerHTML = "";
+
+usersData.users.slice(0, 5).forEach((user) => {
+
+    userCards.innerHTML += `
+        <div class="border rounded-2xl p-5 shadow-sm">
+
+            <div class="flex justify-between items-center">
+
+                <h3 class="font-bold text-[#0B4F63]">
+                    ${user.fullName}
+                </h3>
+
+                <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
+                    Active
+                </span>
+
+            </div>
+
+            <div class="mt-4 space-y-3 text-sm">
+
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Email</span>
+                    <span class="break-all">${user.email}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Wallet</span>
+                    <span>₦${user.balance.toLocaleString()}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Joined</span>
+                    <span>${new Date(user.createdAt).toLocaleDateString()}</span>
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+});
+
     } catch (err) {
 
         console.log(err);
