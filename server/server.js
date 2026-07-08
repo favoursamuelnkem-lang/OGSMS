@@ -1051,6 +1051,29 @@ app.get("/admin/users", async (req, res) => {
   totalWallet
 });
 
+app.get("/admin/recent-users", async (req, res) => {
+    try {
+
+        const users = await User.find()
+            .sort({ createdAt: -1 })
+            .limit(5);
+
+        res.json({
+            success: true,
+            users
+        });
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.json({
+            success: false
+        });
+
+    }
+});
+
     } catch (err) {
 
         console.log(err);

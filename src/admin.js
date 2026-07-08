@@ -104,6 +104,34 @@ purchaseData.purchases.forEach((purchase) => {
     `;
 
 });
+
+const recentUsersResponse = await fetch(`${API_URL}/admin/recent-users`);
+const recentUsersData = await recentUsersResponse.json();
+
+const recentUsersTable = document.getElementById("recentUsersTable");
+
+recentUsersTable.innerHTML = "";
+
+recentUsersData.users.forEach(user => {
+
+    recentUsersTable.innerHTML += `
+        <tr class="border-t">
+            <td class="px-6 py-5">${user.fullName}</td>
+            <td class="px-6 py-5">${user.email}</td>
+            <td class="px-6 py-5">₦${user.balance}</td>
+            <td class="px-6 py-5">
+                ${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}
+            </td>
+            <td class="px-6 py-5">
+                <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full">
+                    Active
+                </span>
+            </td>
+        </tr>
+    `;
+
+});
+
     } catch (error) {
 
         console.log(error);
