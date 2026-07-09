@@ -8,7 +8,7 @@ async function loadPayments() {
 
         const data = await response.json();
 
-        const table = document.getElementById("paymentTransactionsTable");
+        const table = document.getElementById("paymentTransactionTable");
 
         table.innerHTML = "";
 
