@@ -1157,29 +1157,7 @@ app.get("/admin/payments", async (req, res) => {
 
 });
 
-app.get("/admin/payments", async (req, res) => {
 
-    try {
-
-        const payments = await Payment.find()
-            .sort({ createdAt: -1 });
-
-        res.json({
-            success: true,
-            payments
-        });
-
-    } catch (err) {
-
-        console.log(err);
-
-        res.json({
-            success: false
-        });
-
-    }
-
-});
 
 app.listen(PORT, () => {
 

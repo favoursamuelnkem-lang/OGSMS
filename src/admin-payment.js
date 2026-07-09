@@ -8,19 +8,19 @@ async function loadPayments() {
 
         const data = await response.json();
 
-        const table = document.getElementById("paymentTable");
+        const table = document.getElementById("paymentTransactionsTable");
 
         table.innerHTML = "";
 
         document.getElementById("totalTransactions").textContent = data.payments.length;
 
-        document.getElementById("successfulPayments").textContent =
+        document.getElementById("successfulTransactions").textContent =
             data.payments.filter(p => p.status === "Successful").length;
 
-        document.getElementById("pendingPayments").textContent =
+        document.getElementById("pendingTransactions").textContent =
             data.payments.filter(p => p.status === "Pending").length;
 
-        document.getElementById("failedPayments").textContent =
+        document.getElementById("failedTransactions").textContent =
             data.payments.filter(p => p.status === "Failed").length;
 
         data.payments.forEach((payment) => {
