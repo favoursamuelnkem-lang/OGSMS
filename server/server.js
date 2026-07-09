@@ -78,6 +78,22 @@ const numberSchema = new mongoose.Schema({
 
 const PurchasedNumber = mongoose.model("PurchasedNumber", numberSchema);
 
+
+
+const paymentSchema = new mongoose.Schema({
+    customer: String,
+    amount: Number,
+    transactionId: String,
+    reference: String,
+    method: String,
+    status: String,
+    createdAt: { type: Date, default: Date.now }
+});
+
+const Payment = mongoose.model("Payment", paymentSchema);
+
+
+
 // ======================
 // REGISTER
 // ======================
@@ -342,6 +358,18 @@ app.post("/update-wallet", async (req, res) => {
     user.balance += Number(amount);
     user.processedTxIds.push(String(transaction_id));
     await user.save();
+
+   const payment = new Payment({
+    customer: email,
+    amount: Number(amount),
+    transactionId: transaction_id,
+    reference: verifyRes.data.data.tx_ref,
+    method: "Flutterwave",
+    status: "Successful"
+});
+
+await payment.save();
+
 
     return res.json({ success: true, balance: user.balance });
 
@@ -1102,6 +1130,30 @@ app.get("/admin/recent-purchases", async (req, res) => {
     });
 
   }
+
+});
+
+app.get("/admin/payments", async (req, res) => {
+
+    try {
+
+        const payments = await Payment.find()
+            .sort({ createdAt: -1 });
+
+        res.json({
+            success: true,
+            payments
+        });
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.json({
+            success: false
+        });
+
+    }
 
 });
 

@@ -736,6 +736,9 @@
   .text-\[\#0B4F63\] {
     color: #0B4F63;
   }
+  .text-\[\#0b4f63\] {
+    color: #0b4f63;
+  }
   .text-gray-300 {
     color: var(--color-gray-300);
   }
@@ -789,6 +792,9 @@
   }
   .text-yellow-700 {
     color: var(--color-yellow-700);
+  }
+  .capitalize {
+    text-transform: capitalize;
   }
   .shadow {
     --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
