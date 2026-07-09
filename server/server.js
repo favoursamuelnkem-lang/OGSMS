@@ -359,6 +359,11 @@ app.post(
   "/buy-number",
   async (req, res) => {
 
+    let user;
+    let sellingPrice = 0;
+
+    
+
     try {
 
       const email =
@@ -373,7 +378,7 @@ app.post(
       console.log("Country:", country);
 console.log("Service:", service);
 
-let sellingPrice = 0;
+
 
        if (service === "whatsapp") {
     sellingPrice = 3500;
@@ -402,7 +407,7 @@ else if (service === "instagram") {
 else if (service === "gmail") {
     sellingPrice = 2000;
 }
-      let user =
+       user =
       await User.findOne({
 
         email
@@ -1097,6 +1102,30 @@ app.get("/admin/recent-purchases", async (req, res) => {
     });
 
   }
+
+});
+
+app.get("/admin/payments", async (req, res) => {
+
+    try {
+
+        const payments = await Payment.find()
+            .sort({ createdAt: -1 });
+
+        res.json({
+            success: true,
+            payments
+        });
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.json({
+            success: false
+        });
+
+    }
 
 });
 
