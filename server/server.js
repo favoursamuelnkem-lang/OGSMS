@@ -807,86 +807,61 @@ app.get("/auto-refund", async (req, res) => {
 // GET LIVE PRICE
 // ======================
 
-app.post(
-  "/get-price",
-  async (req, res) => {
+
+
+   // ======================
+// GET PRICE FROM DATABASE
+// ======================
+
+app.post("/get-price", async (req, res) => {
 
     try {
 
-      const country =
-      req.body.country;
+        const { country, service } = req.body;
 
-      const service =
-      req.body.service;
+        const pricing = await Pricing.findOne({
 
-      
+            country: country.toLowerCase(),
 
-      const response =
-      await axios.get(
+            service: service.toLowerCase(),
 
-        `https://5sim.net/v1/guest/prices?country=${country}&product=${service}`
+            active: true
 
-      );
+        });
 
-      const data =
-      response.data;
-
-      if(data[country]){
-
-        const operators =
-        Object.keys(
-          data[country]
-        );
-
-        if(operators.length > 0){
-
-          const firstOperator =
-          operators[0];
-
-          const serviceData =
-          data[country]
-          [firstOperator]
-          [service];
-
-          if(serviceData){
+        if (!pricing) {
 
             return res.json({
 
-              success: true,
+                success: false,
 
-              price:
-              serviceData.cost
+                message: "Price not configured"
 
             });
 
-          }
-
         }
 
-      }
+        res.json({
 
-      res.json({
+            success: true,
 
-        success: false
+            price: pricing.price
 
-      });
+        });
 
-    }
+    } catch (err) {
 
-    catch(error){
+        console.log(err);
 
-      console.log(error);
+        res.json({
 
-      res.json({
+            success: false
 
-        success: false
-
-      });
+        });
 
     }
 
-  }
-);
+});
 
 
 // ======================

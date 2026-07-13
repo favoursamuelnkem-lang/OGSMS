@@ -732,33 +732,14 @@ serviceSelect.value
     console.log(data);
 
    
+if (data.success) {
 
-   if (serviceSelect.value === "whatsapp") {
-    priceInput.value = "₦3500";
-}
+    priceInput.value = "₦" + Number(data.price).toLocaleString();
 
-else if (serviceSelect.value === "facebook") {
+} else {
 
-    if (countrySelect.value === "usa") {
-        priceInput.value = "₦900";
-    }
+    priceInput.value = "Not Available";
 
-    else {
-        priceInput.value = "₦500";
-    }
-
-}
-
-else if (serviceSelect.value === "telegram") {
-    priceInput.value = "₦1500";
-}
-
-else if (serviceSelect.value === "instagram") {
-    priceInput.value = "₦2200";
-}
-
-else if (serviceSelect.value === "gmail") {
-    priceInput.value = "₦2000";
 }
 
 }
