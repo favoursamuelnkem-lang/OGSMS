@@ -112,6 +112,20 @@ const paymentSchema = new mongoose.Schema({
 
 const Payment = mongoose.model("Payment", paymentSchema);
 
+// ======================
+// ADMIN SCHEMA + MODEL
+// ======================
+
+const adminSchema = new mongoose.Schema({
+
+    username: String,
+
+    password: String
+
+});
+
+const Admin = mongoose.model("Admin", adminSchema);
+
 
 
 // ======================
@@ -1151,6 +1165,7 @@ app.get("/admin/payments", async (req, res) => {
 });
 
 
+
 // ======================
 // ADMIN ADD / UPDATE PRICE
 // ======================
@@ -1281,6 +1296,98 @@ app.get("/countries", async (req, res) => {
     }
 
 });
+
+
+// ======================
+// ADMIN LOGIN
+// ======================
+
+app.post("/admin/login", async (req, res) => {
+
+    try {
+
+        const { username, password } = req.body;
+
+        const admin = await Admin.findOne({
+            username,
+            password
+        });
+
+        if (!admin) {
+
+            return res.json({
+                success: false,
+                message: "Invalid Admin Login"
+            });
+
+        }
+
+        res.json({
+            success: true
+        });
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.json({
+            success: false
+        });
+
+    }
+
+});
+
+
+
+// ======================
+// CREATE FIRST ADMIN
+// ======================
+
+app.post("/admin/create-admin", async (req, res) => {
+
+    try {
+
+        const { username, password } = req.body;
+
+        const existing = await Admin.findOne({ username });
+
+        if (existing) {
+
+            return res.json({
+                success: false,
+                message: "Admin already exists"
+            });
+
+        }
+
+        const admin = new Admin({
+            username,
+            password
+        });
+
+        await admin.save();
+
+        res.json({
+            success: true,
+            message: "Admin created successfully"
+        });
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.json({
+            success: false
+        });
+
+    }
+
+});
+
+
+
+
 app.listen(PORT, () => {
 
   console.log(
