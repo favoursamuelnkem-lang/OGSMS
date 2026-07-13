@@ -61,6 +61,26 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model("User", userSchema); // ✅ THIS WAS MISSING
+// ======================
+// PRICING SCHEMA + MODEL
+// ======================
+
+const pricingSchema = new mongoose.Schema({
+
+    country: String,
+
+    service: String,
+
+    price: Number,
+
+    active: {
+        type: Boolean,
+        default: true
+    }
+
+});
+
+const Pricing = mongoose.model("Pricing", pricingSchema);
 
 // ======================
 // NUMBER SCHEMA + MODEL
@@ -403,38 +423,58 @@ app.post(
       const service =
       req.body.service;
 
+      const pricing = await Pricing.findOne({
+
+    country: country.toLowerCase(),
+
+    service: service.toLowerCase(),
+
+    active: true
+
+});
+
+if (!pricing) {
+
+    return res.json({
+
+        success: false,
+
+        message: "Price not configured"
+
+    });
+
+}
+
+sellingPrice = pricing.price;
+
       console.log("Country:", country);
 console.log("Service:", service);
 
 
 
-       if (service === "whatsapp") {
-    sellingPrice = 3500;
+    const pricing = await Pricing.findOne({
+
+    country: country.toLowerCase(),
+
+    service: service.toLowerCase(),
+
+    active: true
+
+});
+
+if (!pricing) {
+
+    return res.json({
+
+        success: false,
+
+        message: "Price not configured"
+
+    });
+
 }
 
-else if (service === "facebook") {
-
-    if (country === "usa") {
-        sellingPrice = 900;
-    }
-
-    else {
-        sellingPrice = 500;
-    }
-
-}
-
-else if (service === "telegram") {
-    sellingPrice = 1500;
-}
-
-else if (service === "instagram") {
-    sellingPrice = 2200;
-}
-
-else if (service === "gmail") {
-    sellingPrice = 2000;
-}
+sellingPrice = pricing.price;
        user =
       await User.findOne({
 
@@ -1158,6 +1198,84 @@ app.get("/admin/payments", async (req, res) => {
 });
 
 
+// ======================
+// ADMIN ADD / UPDATE PRICE
+// ======================
+
+app.post("/admin/save-price", async (req, res) => {
+
+    try {
+
+        const { country, service, price } = req.body;
+
+        let pricing = await Pricing.findOne({
+            country,
+            service
+        });
+
+        if (pricing) {
+
+            pricing.price = Number(price);
+            await pricing.save();
+
+        } else {
+
+            pricing = new Pricing({
+                country,
+                service,
+                price: Number(price)
+            });
+
+            await pricing.save();
+
+        }
+
+        res.json({
+            success: true,
+            pricing
+        });
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.json({
+            success: false
+        });
+
+    }
+
+});
+
+// ======================
+// ADMIN GET PRICES
+// ======================
+
+app.get("/admin/prices", async (req, res) => {
+
+    try {
+
+        const prices = await Pricing.find().sort({
+            country: 1,
+            service: 1
+        });
+
+        res.json({
+            success: true,
+            prices
+        });
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.json({
+            success: false
+        });
+
+    }
+
+});
 
 app.listen(PORT, () => {
 
