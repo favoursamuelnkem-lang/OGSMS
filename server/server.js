@@ -11,6 +11,8 @@ const flw = new Flutterwave(
   process.env.FLW_SECRET_KEY
 );
 
+const HERO_API_KEY = process.env.HERO_API_KEY;
+
 
 // ======================
 // MIDDLEWARE
@@ -521,26 +523,17 @@ console.log("Selling Price:", sellingPrice);
  console.log(country);
 console.log(service);  
 
-      const buyResponse =
-      await axios.get(
-
-        `https://5sim.net/v1/user/buy/activation/${country}/any/${service}`,
-
-        {
-
-          headers: {
-
-            Authorization:
-            "Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4MTEzNzQ1NzUsImlhdCI6MTc3OTgzODU3NSwicmF5IjoiMWNkMjg5MWI5ODE3ODg4ZTJiZmY5ODFjZjkyYzllNjQiLCJzdWIiOjQxMjUyMjF9.0of6sZEt8BPcNp-H1G9Hyf2VyPgxuvfKrpYJ1BrR09jH_SiKwxueU0mghaLrVK8ZLUcPQwYH2HoTe5rT1nUtMbjBm1GIcvx9lRv47TAwNWJ3JZ51phEZJjTFZhnh_Dk3zl-2PVxWD0SPAacfP_F696QhyZ6fpW-EzXHHQ9etqfuGQAK4yLbz_kk_BYfSux-Vo-KOAmEzrVqodI1n_799o9m2mGIp6tx8FO2G88A4OPCapiW4sOJAf8CtbD7RN8ydG0dcQPC5KFHUx1VMoV0uveOKPmjZx-zwREmgjU3Hc8M77I-Syvl-iyFA0QbAwzMskB1u7bxJGEXDmPPNIuIByw",
-
-            Accept:
-            "application/json"
-
-          }
-
+     const buyResponse = await axios.get(
+    "https://hero-sms.com/stubs/handler_api.php",
+    {
+        params: {
+            action: "getNumberV2",
+            api_key: HERO_API_KEY,
+            service: service,
+            country: country
         }
-
-      );
+    }
+);
       console.log(
         buyResponse.data
       );
