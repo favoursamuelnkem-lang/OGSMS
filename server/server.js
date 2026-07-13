@@ -1230,6 +1230,35 @@ app.get("/admin/prices", async (req, res) => {
 
 });
 
+
+// ======================
+// GET AVAILABLE COUNTRIES
+// ======================
+
+app.get("/countries", async (req, res) => {
+
+    try {
+
+        const countries = await Pricing.distinct("country", {
+            active: true
+        });
+
+        res.json({
+            success: true,
+            countries
+        });
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.json({
+            success: false
+        });
+
+    }
+
+});
 app.listen(PORT, () => {
 
   console.log(
