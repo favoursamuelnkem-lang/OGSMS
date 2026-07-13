@@ -1,9 +1,5 @@
 
-if (!localStorage.getItem("currentUser")) {
 
-    window.location.href = "login.html";
-
-}
 const API_URL = "https://ogsms-3.onrender.com";
 
 
