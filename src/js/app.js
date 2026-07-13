@@ -1,8 +1,15 @@
 
-if (!localStorage.getItem("currentUser")) {
+const protectedPages = [
+    "dashboard.html"
+];
 
+const currentPage = window.location.pathname.split("/").pop();
+
+if (
+    protectedPages.includes(currentPage) &&
+    !localStorage.getItem("currentUser")
+) {
     window.location.href = "login.html";
-
 }
 const API_URL = "https://ogsms-3.onrender.com";
 
