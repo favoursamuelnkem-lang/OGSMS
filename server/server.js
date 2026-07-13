@@ -415,6 +415,26 @@ await payment.save();
   }
 });
 
+const heroServiceCodes = {
+    facebook: "fb",
+    whatsapp: "wa",
+    telegram: "tg",
+    google: "go",
+    gmail: "go",
+    youtube: "go",
+    instagram: "ig",
+    tiktok: "lf",
+    paypal: "ts"
+};
+
+const heroCountryCodes = {
+    usa: 187,
+    canada: 36,
+    uk: 16,
+    "south africa": 1
+};
+
+
 // ======================
 // BUY NUMBER
 // ======================
@@ -523,14 +543,14 @@ console.log("Selling Price:", sellingPrice);
  console.log(country);
 console.log(service);  
 
-     const buyResponse = await axios.get(
+    const buyResponse = await axios.get(
     "https://hero-sms.com/stubs/handler_api.php",
     {
         params: {
             action: "getNumberV2",
             api_key: HERO_API_KEY,
-            service: service,
-            country: country
+            service: heroServiceCodes[service.toLowerCase()] || service,
+            country: heroCountryCodes[country.toLowerCase()] || country
         }
     }
 );
