@@ -452,29 +452,7 @@ console.log("Service:", service);
 
 
 
-    const pricing = await Pricing.findOne({
-
-    country: country.toLowerCase(),
-
-    service: service.toLowerCase(),
-
-    active: true
-
-});
-
-if (!pricing) {
-
-    return res.json({
-
-        success: false,
-
-        message: "Price not configured"
-
-    });
-
-}
-
-sellingPrice = pricing.price;
+   
        user =
       await User.findOne({
 
