@@ -187,3 +187,11 @@ usersData.users.slice(0, 5).forEach((user) => {
 }
 
 loadDashboard();
+
+function adminLogout() {
+
+    localStorage.removeItem("adminLoggedIn");
+
+    window.location.href = "admin-login.html";
+
+}

@@ -1344,46 +1344,6 @@ app.post("/admin/login", async (req, res) => {
 // CREATE FIRST ADMIN
 // ======================
 
-app.post("/admin/create-admin", async (req, res) => {
-
-    try {
-
-        const { username, password } = req.body;
-
-        const existing = await Admin.findOne({ username });
-
-        if (existing) {
-
-            return res.json({
-                success: false,
-                message: "Admin already exists"
-            });
-
-        }
-
-        const admin = new Admin({
-            username,
-            password
-        });
-
-        await admin.save();
-
-        res.json({
-            success: true,
-            message: "Admin created successfully"
-        });
-
-    } catch (err) {
-
-        console.log(err);
-
-        res.json({
-            success: false
-        });
-
-    }
-
-});
 
 
 

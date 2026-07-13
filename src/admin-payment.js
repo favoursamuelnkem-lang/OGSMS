@@ -1,3 +1,8 @@
+if (localStorage.getItem("adminLoggedIn") !== "true") {
+
+    window.location.href = "admin-login.html";
+
+}
 const API_URL = "https://ogsms-3.onrender.com";
 
 async function loadPayments() {
