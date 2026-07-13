@@ -563,7 +563,7 @@ console.log(service);
 
 
 
-     if(!buyResponse.data.phone){
+     if (!buyResponse.data.phoneNumber) {
 
   // REFUND USER
   user.balance =
@@ -582,12 +582,9 @@ console.log(service);
 
 }
 
-      const generatedNumber =
-      buyResponse.data.phone;
+     const generatedNumber = buyResponse.data.phoneNumber;
 
-      const orderId =
-      buyResponse.data.id;
-
+const orderId = buyResponse.data.activationId;
       const realPrice =
       buyResponse.data.price || 0;
 
