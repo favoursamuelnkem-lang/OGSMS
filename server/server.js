@@ -95,6 +95,7 @@ const numberSchema = new mongoose.Schema({
   service: String,
   price: Number,
   status: { type: String, default: "pending" },
+  smsCode: String,
   createdAt: { type: Date, default: Date.now }
 });
 
@@ -919,9 +920,12 @@ if (status.startsWith("STATUS_OK:")) {
     const code = status.split(":")[1];
 
     await PurchasedNumber.findOneAndUpdate(
-        { orderId },
-        { status: "successful" }
-    );
+    { orderId },
+    {
+        status: "successful",
+        smsCode: code
+    }
+);
 
     return res.json({
         success: true,

@@ -164,13 +164,21 @@ if(item.status === "pending"){
 
 }
 
-          let statusHtml = "";
+        let statusHtml = "";
 
 if(item.status === "successful"){
   statusHtml = `
     <p class="text-green-600 font-bold">
-      Successful
+      ✅ Successful
     </p>
+
+    ${
+      item.smsCode
+        ? `<p class="mt-2 text-lg font-bold text-[#0B4F63]">
+             SMS Code: ${item.smsCode}
+           </p>`
+        : ""
+    }
   `;
 }
 
