@@ -141,12 +141,21 @@ Price
 Status
 
 </th>
+<td class="px-6 py-4">
 
-<th class="px-6 py-4 text-left">
+    <button
+        onclick="editPrice('${item._id}')"
+        class="bg-[#0B4F63] text-white px-4 py-2 rounded-lg">
+        Edit
+    </button>
 
-Action
+    <button
+        onclick="deletePrice('${item._id}')"
+        class="bg-red-500 text-white px-4 py-2 rounded-lg ml-2">
+        Delete
+    </button>
 
-</th>
+</td>
 
 </tr>
 

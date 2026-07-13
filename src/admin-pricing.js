@@ -61,17 +61,25 @@ async function loadPrices() {
 
                     </td>
 
-                    <td class="px-6 py-5">
+                   <td class="px-6 py-5 flex gap-2">
 
-                        <button
-                        onclick="editPrice('${price.country}','${price.service}',${price.price})"
-                        class="bg-[#0B4F63] text-white px-4 py-2 rounded-lg">
+    <button
+    onclick="editPrice('${price.country}','${price.service}',${price.price})"
+    class="bg-[#0B4F63] text-white px-4 py-2 rounded-lg">
 
-                            Edit
+        Edit
 
-                        </button>
+    </button>
 
-                    </td>
+    <button
+    onclick="deletePrice('${price._id}')"
+    class="bg-red-500 text-white px-4 py-2 rounded-lg">
+
+        Delete
+
+    </button>
+
+</td>
 
                 </tr>
             `;
@@ -112,13 +120,25 @@ async function loadPrices() {
 
                     </p>
 
-                    <button
-                    onclick="editPrice('${price.country}','${price.service}',${price.price})"
-                    class="w-full mt-5 bg-[#0B4F63] text-white py-3 rounded-xl">
+                   <div class="grid grid-cols-2 gap-3 mt-5">
 
-                        Edit
+    <button
+    onclick="editPrice('${price.country}','${price.service}',${price.price})"
+    class="bg-[#0B4F63] text-white py-3 rounded-xl">
 
-                    </button>
+        Edit
+
+    </button>
+
+    <button
+    onclick="deletePrice('${price._id}')"
+    class="bg-red-500 text-white py-3 rounded-xl">
+
+        Delete
+
+    </button>
+
+</div>
 
                 </div>
 
@@ -203,3 +223,42 @@ function editPrice(country,service,price){
 }
 
 loadPrices();
+
+async function deletePrice(id) {
+
+    const confirmDelete = confirm("Delete this price?");
+
+    if (!confirmDelete) return;
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/admin/delete-price/${id}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+
+            alert("Price Deleted Successfully");
+
+            loadPrices();
+
+        } else {
+
+            alert("Failed to delete");
+
+        }
+
+    } catch (err) {
+
+        console.log(err);
+
+        alert("Server Error");
+
+    }
+
+}

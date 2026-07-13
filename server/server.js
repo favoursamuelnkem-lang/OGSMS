@@ -1230,6 +1230,28 @@ app.get("/admin/prices", async (req, res) => {
 
 });
 
+app.delete("/admin/delete-price/:id", async (req, res) => {
+
+    try {
+
+        await Pricing.findByIdAndDelete(req.params.id);
+
+        res.json({
+            success: true
+        });
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.json({
+            success: false
+        });
+
+    }
+
+});
+
 
 // ======================
 // GET AVAILABLE COUNTRIES
