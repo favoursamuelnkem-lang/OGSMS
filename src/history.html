@@ -244,15 +244,13 @@ ${cancelButton}
 
           `;
 
-          if(item.status === "pending"){
+         checkSMS(item.orderId);
 
-  checkSMS(item.orderId);
+if(item.status === "pending"){
 
-  setInterval(() => {
-
-    checkSMS(item.orderId);
-
-  }, 5000);
+    setInterval(() => {
+        checkSMS(item.orderId);
+    }, 5000);
 
 }
 
