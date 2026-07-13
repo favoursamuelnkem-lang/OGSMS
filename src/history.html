@@ -299,22 +299,42 @@ async function checkSMS(orderId){
       `sms-${orderId}`
     );
 
-    if(
-      data.data.sms &&
-      data.data.sms.length > 0
-    ){
+    async function checkSMS(orderId){
 
-      smsBox.innerHTML =
-      `Code: ${data.data.sms[0].code}`;
+  try{
 
-      smsBox.className =
-      "mt-3 text-green-600 font-bold";
+    const response = await fetch(`${API_URL}/get-sms`,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body: JSON.stringify({ orderId })
+    });
 
-    }
+    const data = await response.json();
 
-    else{
+    const smsBox = document.getElementById(`sms-${orderId}`);
 
-  smsBox.innerHTML = "";
+    if (data.success && data.sms) {
+
+    smsBox.innerHTML = `Code: ${data.sms}`;
+    smsBox.className = "mt-3 text-green-600 font-bold";
+
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+
+} else {
+
+    smsBox.innerHTML = "";
+
+}
+
+  }catch(error){
+
+    console.log(error);
+
+  }
 
 }
 
