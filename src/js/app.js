@@ -681,6 +681,39 @@ document.getElementById(
   "price"
 );
 
+async function loadCountries() {
+
+    const countrySelect = document.getElementById("country");
+
+    if (!countrySelect) return;
+
+    try {
+
+        const response = await fetch(`${API_URL}/countries`);
+        const data = await response.json();
+
+        countrySelect.innerHTML = "";
+
+        data.countries.forEach(country => {
+
+            countrySelect.innerHTML += `
+                <option value="${country}">
+                    ${country}
+                </option>
+            `;
+
+        });
+
+        loadPrice();
+
+    } catch (err) {
+
+        console.log(err);
+
+    }
+
+}
+
 async function loadPrice(){
 
   if(
@@ -776,7 +809,7 @@ if(serviceSelect){
 
 }
 
-loadPrice();
+loadCountries();
 
 async function cancelNumber(orderId, price){
 
