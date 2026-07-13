@@ -912,26 +912,29 @@ app.post(
     }
 );
 
-      if(
-  response.data.sms &&
-  response.data.sms.length > 0
-){
+      const status = response.data;
 
-  await PurchasedNumber.findOneAndUpdate(
-    { orderId },
-    { status: "successful" }
-  );
+if (status.startsWith("STATUS_OK:")) {
+
+    const code = status.split(":")[1];
+
+    await PurchasedNumber.findOneAndUpdate(
+        { orderId },
+        { status: "successful" }
+    );
+
+    return res.json({
+        success: true,
+        sms: code
+    });
 
 }
-console.log("Hero SMS:", response.data);
-      res.json({
 
-        success: true,
+return res.json({
+    success: false,
+    message: status
+});
 
-        data:
-        response.data
-
-      });
 
     }
 
