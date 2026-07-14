@@ -697,6 +697,19 @@ try {
   
   console.log("Cancelling order:", orderId);
 
+  const response = await axios.get(
+  "https://hero-sms.com/stubs/handler_api.php",
+  {
+    params: {
+      action: "cancelActivation",
+      api_key: HERO_API_KEY,
+      id: orderId
+    }
+  }
+);
+
+console.log("Hero Cancel:", response.data);
+
   const purchase = await PurchasedNumber.findOne({ orderId });
 
 if (!purchase) {

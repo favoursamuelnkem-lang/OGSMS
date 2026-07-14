@@ -124,6 +124,8 @@
           "historyContainer"
         );
 
+        container.innerHTML = "";
+
         if(data.purchases.length === 0){
 
           container.innerHTML =
@@ -252,15 +254,8 @@ ${cancelButton}
 
           `;
 
-         checkSMS(item.orderId);
-if(item.status === "pending"){
-
+         if(item.status === "pending"){
     checkSMS(item.orderId);
-
-    setInterval(() => {
-        checkSMS(item.orderId);
-    }, 5000);
-
 }
 
 });
@@ -275,10 +270,13 @@ if(item.status === "pending"){
 
       }
 
-    }
+   }
 
-   loadHistory();
+loadHistory();
 
+setInterval(() => {
+    loadHistory();
+}, 1000);
 
 async function checkSMS(orderId){
 
