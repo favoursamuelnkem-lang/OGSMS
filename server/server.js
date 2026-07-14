@@ -697,25 +697,22 @@ try {
   
   console.log("Cancelling order:", orderId);
 
-  await axios.get(
+  const purchase = await PurchasedNumber.findOne({ orderId });
 
-    `https://5sim.net/v1/user/cancel/${orderId}`,
+if (!purchase) {
+  return res.json({
+    success: false,
+    message: "Order not found"
+  });
+}
 
-    {
-
-      headers: {
-
-        Authorization:
-        "Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4MTEzNzQ1NzUsImlhdCI6MTc3OTgzODU3NSwicmF5IjoiMWNkMjg5MWI5ODE3ODg4ZTJiZmY5ODFjZjkyYzllNjQiLCJzdWIiOjQxMjUyMjF9.0of6sZEt8BPcNp-H1G9Hyf2VyPgxuvfKrpYJ1BrR09jH_SiKwxueU0mghaLrVK8ZLUcPQwYH2HoTe5rT1nUtMbjBm1GIcvx9lRv47TAwNWJ3JZ51phEZJjTFZhnh_Dk3zl-2PVxWD0SPAacfP_F696QhyZ6fpW-EzXHHQ9etqfuGQAK4yLbz_kk_BYfSux-Vo-KOAmEzrVqodI1n_799o9m2mGIp6tx8FO2G88A4OPCapiW4sOJAf8CtbD7RN8ydG0dcQPC5KFHUx1VMoV0uveOKPmjZx-zwREmgjU3Hc8M77I-Syvl-iyFA0QbAwzMskB1u7bxJGEXDmPPNIuIByw",
-
-        Accept:
-        "application/json"
-
-      }
-
-    }
-
-  );
+if (purchase.status !== "pending") {
+  return res.json({
+    success: false,
+    message: "This number can no longer be cancelled."
+  });
+}
+ 
 
   user.balance =
   user.balance + Number(price);
@@ -893,71 +890,76 @@ app.post("/get-price", async (req, res) => {
 // GET SMS
 // ======================
 
-app.post(
-  "/get-sms",
-  async (req, res) => {
 
-    try {
 
-      const orderId =
-      req.body.orderId;
+   app.post("/get-sms", async (req, res) => {
+  try {
 
-     const response = await axios.get(
-    "https://hero-sms.com/stubs/handler_api.php",
-    {
+    const { orderId } = req.body;
+
+    // Check database first
+    const purchase = await PurchasedNumber.findOne({ orderId });
+
+    if (!purchase) {
+      return res.json({
+        success: false,
+        message: "Order not found"
+      });
+    }
+
+    // If code already saved, return it
+    if (purchase.smsCode) {
+      return res.json({
+        success: true,
+        sms: purchase.smsCode
+      });
+    }
+
+    const response = await axios.get(
+      "https://hero-sms.com/stubs/handler_api.php",
+      {
         params: {
-            action: "getStatus",
-            api_key: HERO_API_KEY,
-            id: orderId
+          action: "getStatus",
+          api_key: HERO_API_KEY,
+          id: orderId
         }
-    }
-);
+      }
+    );
 
-      const status = response.data;
+    const status = response.data;
 
-if (status.startsWith("STATUS_OK:")) {
+    console.log("Hero SMS:", status);
 
-    const code = status.split(":")[1];
+    if (status.startsWith("STATUS_OK:")) {
 
-    await PurchasedNumber.findOneAndUpdate(
-    { orderId },
-    {
-        status: "successful",
-        smsCode: code
-    }
-);
+      const code = status.split(":")[1];
 
-    return res.json({
+      purchase.status = "successful";
+      purchase.smsCode = code;
+
+      await purchase.save();
+
+      return res.json({
         success: true,
         sms: code
+      });
+    }
+
+    return res.json({
+      success: false,
+      message: status
     });
 
-}
+  } catch (error) {
 
-return res.json({
-    success: false,
-    message: status
-});
+    console.log(error.response?.data || error.message);
 
-
-    }
-
-    catch(error){
-
-      console.log(error);
-
-      
-
-      res.json({
-
-        success: false
-
-      });
-
-    }
+    res.json({
+      success: false
+    });
 
   }
-);
+});
 
 
 // ======================
@@ -988,13 +990,15 @@ await PurchasedNumber.find({
 });
 
 console.log("PURCHASES FOUND:", purchases);
-      res.json({
+console.log(JSON.stringify(purchases, null, 2));
 
-        success: true,
+res.json({
 
-        purchases
+  success: true,
 
-      });
+  purchases
+
+});
 
     }
 

@@ -253,8 +253,9 @@ ${cancelButton}
           `;
 
          checkSMS(item.orderId);
-
 if(item.status === "pending"){
+
+    checkSMS(item.orderId);
 
     setInterval(() => {
         checkSMS(item.orderId);
@@ -281,79 +282,33 @@ if(item.status === "pending"){
 
 async function checkSMS(orderId){
 
-  try{
+    try{
 
-    const response =
-    await fetch(
-  `${API_URL}/get-sms`,
-      {
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json"
-        },
-        body: JSON.stringify({
-          orderId
-        })
-      }
-    );
+        const response = await fetch(`${API_URL}/get-sms`,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({orderId})
+        });
 
-    const data =
-    await response.json();
+        const data = await response.json();
 
-    const smsBox =
-    document.getElementById(
-      `sms-${orderId}`
-    );
+        if(data.success){
 
-    async function checkSMS(orderId){
+            // SMS has been saved in MongoDB.
+            // Reload history so it displays smsCode.
+            loadHistory();
 
-  try{
+        }
 
-    const response = await fetch(`${API_URL}/get-sms`,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body: JSON.stringify({ orderId })
-    });
+    }catch(error){
 
-    const data = await response.json();
+        console.log(error);
 
-    const smsBox = document.getElementById(`sms-${orderId}`);
-
-    if (data.success && data.sms) {
-
-    smsBox.innerHTML = `Code: ${data.sms}`;
-    smsBox.className = "mt-3 text-green-600 font-bold";
-
-    setTimeout(() => {
-        location.reload();
-    }, 1000);
-
-} else {
-
-    smsBox.innerHTML = "";
+    }
 
 }
-
-  }catch(error){
-
-    console.log(error);
-
-  }
-
-}
-
-  }
-
-  catch(error){
-
-    console.log(error);
-
-  }
-
-}
-
 
 
 
