@@ -749,14 +749,14 @@ if (purchase.status !== "pending") {
 
 catch(error){
 
-  console.log(error);
+  console.log("===== CANCEL ERROR =====");
+  console.log(error.response?.status);
+  console.log(error.response?.data);
+  console.log(error.message);
 
   res.json({
-
     success:false,
-
     message:"Refund failed"
-
   });
 
 }
