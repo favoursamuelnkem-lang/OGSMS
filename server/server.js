@@ -555,9 +555,8 @@ console.log(service);
         }
     }
 );
-      console.log(
-        buyResponse.data
-      );
+      console.log("BUY RESPONSE:");
+console.log(JSON.stringify(buyResponse.data, null, 2));
 
       
      
@@ -696,6 +695,9 @@ try {
   }
   
   console.log("Cancelling order:", orderId);
+
+  console.log("Order ID from MongoDB:", orderId);
+console.log("Type:", typeof orderId);
 
   const response = await axios.get(
   "https://hero-sms.com/stubs/handler_api.php",
